@@ -9,7 +9,7 @@ import java.util.List;
 
 public class AddMovie extends JFrame implements ActionListener {
     JTextField txtTitle = new JTextField(20);
-    String[] genres = {"Children","Action", "Adventure", "Horror", "Animation", "Drama", "Thriller", "Comedy", "Si-fi", "Mystery", "Crime"};
+    String[] genres = {"Children", "Action", "Adventure", "Horror", "Animation", "Drama", "Thriller", "Comedy", "Si-fi", "Mystery", "Crime"};
     JButton btnAdd = new JButton("Add Movie");
     List<Checkbox> checkboxes;
 
@@ -49,7 +49,6 @@ public class AddMovie extends JFrame implements ActionListener {
     }
 
     private void autofocus() {
-
         addWindowListener(new WindowAdapter() {
             public void windowOpened(WindowEvent e) {
                 txtTitle.requestFocus();
@@ -60,9 +59,9 @@ public class AddMovie extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnAdd) {
+            boolean hasSelectedGenre = checkboxes.stream().anyMatch(Checkbox::getState);
 
-            long count = checkboxes.stream().filter(Checkbox::getState).count();
-            if (count == 0) {
+            if (!hasSelectedGenre) {
                 JOptionPane.showMessageDialog(null, "Please choose a genre");
                 return;
             }
@@ -72,6 +71,8 @@ public class AddMovie extends JFrame implements ActionListener {
             System.out.println(txtTitle.getText() + "  " + genreFormatted);
         }
     }
+
+
 
     public static void main() {
         new AddMovie();
