@@ -1,48 +1,51 @@
-
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Checkbox;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.List;
 
-
-public final class AddMovie extends JFrame implements ActionListener {
-
-
-    JTextField txtTitle = new JTextField(30);
-    String[] genres = {"Action", "Adventure", "Horror", "Animation", "Drama", "Thriller", "Comedy", "Si-fi"};
+public class AddMovie extends JFrame implements ActionListener {
+    JTextField txtTitle = new JTextField(20);
+    String[] genres = {"Children","Action", "Adventure", "Horror", "Animation", "Drama", "Thriller", "Comedy", "Si-fi", "Mystery", "Crime"};
     JButton btnAdd = new JButton("Add Movie");
     List<Checkbox> checkboxes;
 
     public AddMovie() {
-        setResizable(false);
-        setLayout(new BorderLayout());
-        setSize(500, 300);
+
         setTitle("Add Movie");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        JPanel top = new JPanel();
-        top.add(new JLabel("Movie Title:"));
-        top.add(txtTitle);
+
+        JPanel content = new JPanel();
+        content.setLayout(new BorderLayout());
         JPanel middle = new JPanel();
-        var labels = Arrays.stream(genres).sorted().toList();
-        checkboxes = labels.stream().map(Checkbox::new).toList();
-        checkboxes.forEach(middle::add);
-        JPanel south = new JPanel();
-        south.add(btnAdd);
-        add(BorderLayout.NORTH, top);
-        add(BorderLayout.CENTER, middle);
-        add(BorderLayout.SOUTH, south);
+
+        JPanel top = new JPanel();
+        top.add(new JLabel("Movie"));
+        top.add(txtTitle);
+        middle.setLayout(new GridLayout(genres.length, 2));
+
+        addGenres(middle);
+
+        content.add(top, BorderLayout.NORTH);
+        content.add(middle, BorderLayout.CENTER);
+        content.add(btnAdd, BorderLayout.SOUTH);
+
+        setContentPane(content);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(400, 400);
         btnAdd.addActionListener(this);
         autofocus();
         setVisible(true);
+
     }
 
-
-    public static void main() {
-        new AddMovie();
+    private void addGenres(JPanel middle) {
+        List<String> genreLabelsSorted = Arrays.stream(genres).sorted().toList();
+        checkboxes = genreLabelsSorted.stream().map(Checkbox::new).toList();
+        checkboxes.forEach(middle::add);
     }
 
     private void autofocus() {
@@ -54,26 +57,25 @@ public final class AddMovie extends JFrame implements ActionListener {
         });
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnAdd) {
+
             long count = checkboxes.stream().filter(Checkbox::getState).count();
             if (count == 0) {
                 JOptionPane.showMessageDialog(null, "Please choose a genre");
                 return;
             }
 
-            System.out.println("Selected genres");
             List<String> selectedGenres = checkboxes.stream().filter(Checkbox::getState).map(Checkbox::getLabel).toList();
             String genreFormatted = String.join("|", selectedGenres);
             System.out.println(txtTitle.getText() + "  " + genreFormatted);
-            System.out.println(genreFormatted);
         }
     }
 
+    public static void main() {
+        new AddMovie();
+    }
 
 }
-
-
 
