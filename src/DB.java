@@ -11,9 +11,11 @@ public class DB {
 
     Connection connect() {
         Connection connection = null;
+
         try {
+            String dbName = "cinema";
             Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/cinema", "admin", "password");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + dbName, "admin", "password");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -79,6 +81,80 @@ public class DB {
     }
 
 
+    public String getMovieName(int movieID) {
+
+
+        try (var con = connect();
+             var stmt = con.prepareStatement("SELECT title FROM movies WHERE movie_id = ?")) {
+            stmt.setInt(1, movieID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                return rs.getString("title");
+
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return "error fetching movie name by movie id";
+
+    }
+
+
+    public List<Integer> getMovieGenres(int movieID) {
+        List<Integer> list = new ArrayList<>();
+
+        try (var con = connect();
+             var stmt = con.prepareStatement("""
+                     
+                     select mg.movie_id, g.genre, g.genre_id
+                     from movie_genres mg
+                     natural join genres g
+                     where mg.movie_id=?
+                     order by g.genre;
+                     
+                     """)) {
+            stmt.setInt(1, movieID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getInt("genre_id"));
+
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return list;
+
+    }
+
+
+
+    public List<String> getMovieGenres2(int movieID) {
+        List<String> list = new ArrayList<>();
+
+        try (var con = connect();
+             var stmt = con.prepareStatement("""
+                     
+                     select mg.movie_id, g.genre, g.genre_id
+                     from movie_genres mg
+                     natural join genres g
+                     where mg.movie_id=?
+                     order by g.genre;
+                     
+                     """)) {
+            stmt.setInt(1, movieID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getString("genre"));
+
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return list;
+
+    }
+
+
     public int getLastID(String idField, String table) {
 
         try (Connection con = connect();
@@ -108,10 +184,25 @@ public class DB {
     }
 
 
+
+
+
+    public boolean deleteMovieGenre(int movieID) {
+        try (var con = connect();
+             var stmt = con.prepareStatement("DELETE FROM movie_genres WHERE movie_id = ?")) {
+            stmt.setInt(1, movieID);
+            return stmt.execute();
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        return false;
+    }
+
+
     public void addMovieGenres(int movieID, List<Integer> genreIDs) {
         try (var con = connect()) {
             for (int genreId : genreIDs) {
-                var stmt = con.prepareStatement("INSERT INTO movie_genres(genre_id, movie_id ) VALUES(?, ?)");
+                var stmt = con.prepareStatement("INSERT INTO movie_genres(genre_id, movie_id) VALUES(?, ?)");
                 stmt.setInt(1, genreId);
                 stmt.setInt(2, movieID);
                 stmt.executeUpdate();
