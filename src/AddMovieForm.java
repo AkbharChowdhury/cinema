@@ -6,15 +6,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class AddMovie extends JFrame implements ActionListener {
+public class AddMovieForm extends JFrame implements ActionListener {
     DB db = DB.getInstance();
+    List<Genre> genreList = db.getAllGenres();
     JTextField txtTitle = new JTextField(20);
-    String[] genres = db.genres().toArray(new String[0]);
+    //    String[] genres = genreList.stream().map(Genre::type).toArray(new String[0]);
     JButton btnAdd = new JButton("Add Movie");
     List<Checkbox> checkboxes;
 
-    public AddMovie() {
+    public AddMovieForm() {
 
         setTitle("Add Movie");
 
@@ -25,7 +27,7 @@ public class AddMovie extends JFrame implements ActionListener {
         JPanel top = new JPanel();
         top.add(new JLabel("Movie"));
         top.add(txtTitle);
-        middle.setLayout(new GridLayout(genres.length, 2));
+        middle.setLayout(new GridLayout(genreList.size(), 2));
 
         addGenres(middle);
 
@@ -44,8 +46,7 @@ public class AddMovie extends JFrame implements ActionListener {
     }
 
     private void addGenres(JPanel middle) {
-        List<String> genreLabelsSorted = Arrays.stream(genres).sorted().toList();
-        checkboxes = genreLabelsSorted.stream().map(Checkbox::new).toList();
+        checkboxes = genreList.stream().map(genre -> new Checkbox(genre.type())).toList();
         checkboxes.forEach(middle::add);
     }
 
@@ -68,15 +69,28 @@ public class AddMovie extends JFrame implements ActionListener {
             }
 
             List<String> selectedGenres = checkboxes.stream().filter(Checkbox::getState).map(Checkbox::getLabel).toList();
+            List<Genre> genreIDList =
+                    genreList.stream()
+                            .filter(xe -> selectedGenres.stream().anyMatch(name -> name.equals(xe.type())))
+                            .toList();
+            List<Integer> selectedGenreIDs = genreIDList.stream().map(Genre::id).toList();
             String genreFormatted = String.join("|", selectedGenres);
-            System.out.println(txtTitle.getText() + "  " + genreFormatted);
+            db.addMovie(txtTitle.getText(), genreFormatted);
+            int lastInsertedMovieID = db.getLastID("movie_id", "movies");
+            db.addMovieGenres(lastInsertedMovieID, selectedGenreIDs);
+            clearForm();
+            JOptionPane.showMessageDialog(null,"Movie Added");
         }
     }
 
+    private void clearForm() {
+        txtTitle.setText("");
+        checkboxes.forEach(checkbox -> checkbox.setState(false));
+    }
 
 
     public static void main() {
-        new AddMovie();
+        new AddMovieForm();
     }
 
 }

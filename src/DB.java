@@ -1,10 +1,11 @@
-import org.postgresql.Driver;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DB {
+    private DB() {
+
+    }
 
     private static volatile DB instance;
 
@@ -39,8 +40,7 @@ public class DB {
 
     }
 
-
-    public void genres() {
+    public List<String> genres() {
         List<String> list = new ArrayList<>();
         try (Connection con = connect();
              Statement stmt = con.createStatement();
@@ -49,63 +49,78 @@ public class DB {
 
 
             while (rs.next()) {
-                String s = rs.getString("genre");
+                list.add(rs.getString("genre"));
 
             }
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-//        return ticketList;
+        return list;
+
     }
 
 
-    public int getLastID(String table, String id) {
-        int lastID = 0;
-
-//        List<String> list = new ArrayList<>();
+    public List<Genre> getAllGenres() {
+        List<Genre> list = new ArrayList<>();
         try (Connection con = connect();
              Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT %s FROM %s ORDER BY %s LIMIT 1".formatted(id, table, id))
+             ResultSet rs = stmt.executeQuery("SELECT * FROM genres")
         ) {
 
             while (rs.next()) {
-                lastID = rs.getInt(id);
-                System.out.println("ID " + rs.getString(id));
-
+                list.add(new Genre(rs.getInt("genre_id"), rs.getString("genre")));
 
             }
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        return lastID;
-//        return ticketList;
+        return list.stream().toList();
+
     }
 
 
-    //    public void addMovie(String title, String genres) {
-//        try (var con = connect(); Statement stmt = con.createStatement()) {
-//            stmt.execute("INSERT INTO movies(title,genres) VALUES(?, ?)");
-//        } catch (Exception e) {
-//            System.err.println(e.getMessage());
-//
-//        }
-//
-//    }
-    public void addMovie(String title, String genres) {
-//"INSERT INTO movies(title,genres) VALUES(?, ?) RETURNING movie_id")
+    public int getLastID(String idField, String table) {
+
+        try (Connection con = connect();
+             var stmt = con.prepareStatement("SELECT %s FROM %s order by %s desc limit 1".formatted(idField, table, idField))
+        ) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) return rs.getInt(idField);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
+        return 0;
+    }
+
+
+    public boolean addMovie(String title, String genres) {
         try (var con = connect();
              var stmt = con.prepareStatement("INSERT INTO movies(title,genres) VALUES(?, ?)")) {
             stmt.setString(1, title);
             stmt.setString(2, genres);
-            stmt.executeUpdate();
+            return stmt.execute();
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        return false;
+    }
 
+
+    public void addMovieGenres(int movieID, List<Integer> genreIDs) {
+        try (var con = connect()) {
+            for (int genreId : genreIDs) {
+                var stmt = con.prepareStatement("INSERT INTO movie_genres(genre_id, movie_id ) VALUES(?, ?)");
+                stmt.setInt(1, genreId);
+                stmt.setInt(2, movieID);
+                stmt.executeUpdate();
+            }
 
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
-//        return 0;
-
     }
 }
