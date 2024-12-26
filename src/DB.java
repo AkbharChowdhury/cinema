@@ -44,13 +44,11 @@ public class DB {
         List<String> list = new ArrayList<>();
         try (Connection con = connect();
              Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM genres")
+             ResultSet rs = stmt.executeQuery("SELECT * FROM genres ORDER BY genre")
         ) {
-
 
             while (rs.next()) {
                 list.add(rs.getString("genre"));
-
             }
 
         } catch (Exception e) {
@@ -65,7 +63,7 @@ public class DB {
         List<Genre> list = new ArrayList<>();
         try (Connection con = connect();
              Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM genres")
+             ResultSet rs = stmt.executeQuery("SELECT * FROM genres ORDER BY genre")
         ) {
 
             while (rs.next()) {
@@ -76,7 +74,7 @@ public class DB {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        return list.stream().toList();
+        return list;
 
     }
 

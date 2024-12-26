@@ -4,22 +4,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AddMovieForm extends JFrame implements ActionListener {
     DB db = DB.getInstance();
     List<Genre> genreList = db.getAllGenres();
     JTextField txtTitle = new JTextField(20);
-    //    String[] genres = genreList.stream().map(Genre::type).toArray(new String[0]);
     JButton btnAdd = new JButton("Add Movie");
     List<Checkbox> checkboxes;
 
     public AddMovieForm() {
-
         setTitle("Add Movie");
-
         JPanel content = new JPanel();
         content.setLayout(new BorderLayout());
         JPanel middle = new JPanel();
@@ -62,7 +57,10 @@ public class AddMovieForm extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnAdd) {
             boolean hasSelectedGenre = checkboxes.stream().anyMatch(Checkbox::getState);
-
+            if (txtTitle.getText().trim().isBlank()){
+                JOptionPane.showMessageDialog(null, "Movie title is required");
+                return;
+            }
             if (!hasSelectedGenre) {
                 JOptionPane.showMessageDialog(null, "Please choose a genre");
                 return;
@@ -75,7 +73,7 @@ public class AddMovieForm extends JFrame implements ActionListener {
                             .toList();
             List<Integer> selectedGenreIDs = genreIDList.stream().map(Genre::id).toList();
             String genreFormatted = String.join("|", selectedGenres);
-            db.addMovie(txtTitle.getText(), genreFormatted);
+            db.addMovie(txtTitle.getText().trim(), genreFormatted);
             int lastInsertedMovieID = db.getLastID("movie_id", "movies");
             db.addMovieGenres(lastInsertedMovieID, selectedGenreIDs);
             clearForm();
