@@ -35,7 +35,7 @@ public class AddMovie extends JFrame implements ActionListener {
 
         setContentPane(content);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(400, 400);
         btnAdd.addActionListener(this);
         autofocus();

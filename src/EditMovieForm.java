@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class EditMovieForm extends JFrame implements ActionListener {
-    final int MOVIE_ID = 109;
+    final int MOVIE_ID = MovieInfo.getMovieID();
     DB db = DB.getInstance();
     final String MOVIE_TITLE = db.getMovieName(MOVIE_ID);
     List<Genre> genreList = db.getAllGenres();
@@ -37,7 +37,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
         setContentPane(panel);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(450, 400);
         btnUpdateMovie.addActionListener(this);
         btnReset.addActionListener(this);

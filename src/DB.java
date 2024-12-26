@@ -61,6 +61,29 @@ public class DB {
     }
 
 
+    public List<Movie> movieList() {
+        List<Movie> list = new ArrayList<>();
+        try (Connection con = connect();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM view_all_movies")
+        ) {
+
+            while (rs.next()) {
+                int id = rs.getInt("movie_id");
+                String title = rs.getString("title");
+                String genres = rs.getString("genres");
+                list.add(new Movie(id, title, genres));
+
+            }
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return list;
+
+    }
+
+
     public List<Genre> getAllGenres() {
         List<Genre> list = new ArrayList<>();
         try (Connection con = connect();
@@ -98,10 +121,6 @@ public class DB {
         return "error fetching movie name by movie id";
 
     }
-
-
-
-
 
 
     public List<String> getSelectedMovieGenres(int movieID) {
@@ -158,9 +177,6 @@ public class DB {
         }
         return false;
     }
-
-
-
 
 
     public boolean deleteMovieGenre(int movieID) {
