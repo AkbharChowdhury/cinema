@@ -1,3 +1,5 @@
+import models.Genre;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,17 +12,17 @@ public class AddMovieForm extends JFrame implements ActionListener {
     DB db = DB.getInstance();
     List<Genre> genreList = db.getAllGenres();
     JTextField txtTitle = new JTextField(20);
-    JButton btnAdd = new JButton("Add Movie");
+    JButton btnAdd = new JButton("Add models.Movie");
     List<Checkbox> checkboxes;
 
     public AddMovieForm() {
-        setTitle("Add Movie");
+        setTitle("Add models.Movie");
         JPanel content = new JPanel();
         content.setLayout(new BorderLayout());
         JPanel middle = new JPanel();
 
         JPanel top = new JPanel();
-        top.add(new JLabel("Movie"));
+        top.add(new JLabel("models.Movie"));
         top.add(txtTitle);
         middle.setLayout(new GridLayout(genreList.size(), 2));
 
@@ -58,7 +60,7 @@ public class AddMovieForm extends JFrame implements ActionListener {
         if (e.getSource() == btnAdd) {
             boolean hasSelectedGenre = checkboxes.stream().anyMatch(Checkbox::getState);
             if (txtTitle.getText().trim().isBlank()){
-                JOptionPane.showMessageDialog(null, "Movie title is required");
+                JOptionPane.showMessageDialog(null, "models.Movie title is required");
                 return;
             }
             if (!hasSelectedGenre) {
@@ -74,7 +76,7 @@ public class AddMovieForm extends JFrame implements ActionListener {
             int lastInsertedMovieID = db.getLastID("movie_id", "movies");
             db.addMovieGenres(lastInsertedMovieID, selectedGenreIDs);
             clearForm();
-            JOptionPane.showMessageDialog(null,"Movie Added");
+            JOptionPane.showMessageDialog(null,"models.Movie Added");
         }
     }
 

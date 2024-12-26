@@ -1,3 +1,6 @@
+import models.Genre;
+import models.Movie;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

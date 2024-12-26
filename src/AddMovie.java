@@ -11,19 +11,19 @@ public class AddMovie extends JFrame implements ActionListener {
     DB db = DB.getInstance();
     JTextField txtTitle = new JTextField(20);
     String[] genres = db.genres().toArray(new String[0]);
-    JButton btnAdd = new JButton("Add Movie");
+    JButton btnAdd = new JButton("Add models.Movie");
     List<Checkbox> checkboxes;
 
     public AddMovie() {
 
-        setTitle("Add Movie");
+        setTitle("Add models.Movie");
 
         JPanel content = new JPanel();
         content.setLayout(new BorderLayout());
         JPanel middle = new JPanel();
 
         JPanel top = new JPanel();
-        top.add(new JLabel("Movie"));
+        top.add(new JLabel("models.Movie"));
         top.add(txtTitle);
         middle.setLayout(new GridLayout(genres.length, 2));
 

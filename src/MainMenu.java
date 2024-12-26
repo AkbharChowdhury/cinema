@@ -1,3 +1,6 @@
+import models.Movie;
+import models.MovieInfo;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
@@ -9,16 +12,14 @@ import java.util.List;
 public class MainMenu extends JFrame implements ActionListener {
     DB db = DB.getInstance();
     List<Movie> movieList = db.movieList();
-    JButton button = new JButton("Edit Movie");
-    JButton btnAdd = new JButton("Add Movie");
+    JButton button = new JButton("Edit models.Movie");
+    JButton btnAdd = new JButton("Add models.Movie");
     int selectedListInvoiceItem;
     DefaultListModel<String> model = new DefaultListModel<>();
     JList<String> list = new JList<>(model);
 
 
     public MainMenu() {
-
-
         list.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
         list.addListSelectionListener((ListSelectionEvent _) -> selectedListInvoiceItem = list.getSelectedIndex());
 

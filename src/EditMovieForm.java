@@ -1,3 +1,6 @@
+import models.Genre;
+import models.MovieInfo;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,7 +13,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
     final String MOVIE_TITLE = db.getMovieName(MOVIE_ID);
     List<Genre> genreList = db.getAllGenres();
     JTextField txtTitle = new JTextField(20);
-    JButton btnUpdateMovie = new JButton("Update Movie");
+    JButton btnUpdateMovie = new JButton("Update models.Movie");
     JButton btnReset = new JButton("Undo title");
 
     List<Checkbox> checkboxes;
@@ -18,13 +21,13 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
     public EditMovieForm() {
         txtTitle.setText(MOVIE_TITLE);
-        setTitle("Edit Movie");
+        setTitle("Edit models.Movie");
         JPanel panel = new JPanel();
         JPanel top = new JPanel();
         JPanel middle = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        top.add(new JLabel("Movie"));
+        top.add(new JLabel("models.Movie"));
         top.add(txtTitle);
         top.add(btnReset);
 
@@ -34,9 +37,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
         panel.add(top, BorderLayout.NORTH);
         panel.add(middle, BorderLayout.CENTER);
         panel.add(btnUpdateMovie, BorderLayout.SOUTH);
-
         setContentPane(panel);
-
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(450, 400);
         btnUpdateMovie.addActionListener(this);
@@ -63,7 +64,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
         if (e.getSource() == btnUpdateMovie){
             boolean hasSelectedGenre = checkboxes.stream().anyMatch(Checkbox::getState);
             if (txtTitle.getText().trim().isBlank()) {
-                JOptionPane.showMessageDialog(null, "Movie title is required");
+                JOptionPane.showMessageDialog(null, "models.Movie title is required");
                 return;
             }
             if (!hasSelectedGenre) {
