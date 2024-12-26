@@ -100,35 +100,11 @@ public class DB {
     }
 
 
-    public List<Integer> getMovieGenres(int movieID) {
-        List<Integer> list = new ArrayList<>();
-
-        try (var con = connect();
-             var stmt = con.prepareStatement("""
-                     
-                     select mg.movie_id, g.genre, g.genre_id
-                     from movie_genres mg
-                     natural join genres g
-                     where mg.movie_id=?
-                     order by g.genre;
-                     
-                     """)) {
-            stmt.setInt(1, movieID);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                list.add(rs.getInt("genre_id"));
-
-            }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
-        return list;
-
-    }
 
 
 
-    public List<String> getMovieGenres2(int movieID) {
+
+    public List<String> getSelectedMovieGenres(int movieID) {
         List<String> list = new ArrayList<>();
 
         try (var con = connect();

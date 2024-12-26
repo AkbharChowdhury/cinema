@@ -7,13 +7,12 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 
 public class EditMovieForm extends JFrame implements ActionListener {
-    final int MOVIE_ID = 108;
+    final int MOVIE_ID = 109;
     DB db = DB.getInstance();
     List<Genre> genreList = db.getAllGenres();
     JTextField txtTitle = new JTextField(20);
     JButton btnAdd = new JButton("Add Movie");
     List<Checkbox> checkboxes;
-    List<Integer> initialGenreID = db.getMovieGenres(MOVIE_ID);
 
     public EditMovieForm() {
         txtTitle.setText(db.getMovieName(MOVIE_ID));
@@ -43,13 +42,9 @@ public class EditMovieForm extends JFrame implements ActionListener {
     }
 
     private void ShowSelectedGenres() {
-        List<Integer> selectedGenreIDs = db.getMovieGenres(MOVIE_ID);
-        var selected = db.getMovieGenres2(MOVIE_ID);
-
         checkboxes.stream()
-                .filter(checkbox -> selected.stream().anyMatch(label -> label.equals(checkbox.getLabel())))
+                .filter(checkbox -> db.getSelectedMovieGenres(MOVIE_ID).stream().anyMatch(label -> label.equals(checkbox.getLabel())))
                 .forEach(checkbox -> checkbox.setState(true));
-
     }
 
     private void addGenres(JPanel middle) {
@@ -86,11 +81,6 @@ public class EditMovieForm extends JFrame implements ActionListener {
         db.addMovieGenres(MOVIE_ID, selectedGenreIDs);
         new EditMovieForm();
 
-    }
-
-    private void clearForm() {
-        txtTitle.setText("");
-        checkboxes.forEach(checkbox -> checkbox.setState(false));
     }
 
 
