@@ -6,24 +6,20 @@ import java.awt.Checkbox;
 import java.awt.event.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 
 public final class AddMovie extends JFrame implements ActionListener {
 
 
-    private final JTextField txtTitle = new JTextField(20);
-    String[] genres = {"Action", "Adventure", "Horror", "Animation", "Drama", "Thriller", "Comedy"};
-
+    JTextField txtTitle = new JTextField(30);
+    String[] genres = {"Action", "Adventure", "Horror", "Animation", "Drama", "Thriller", "Comedy", "Si-fi"};
     JButton btnAdd = new JButton("Add Movie");
-
     List<Checkbox> checkboxes;
 
     public AddMovie() {
-
         setResizable(false);
         setLayout(new BorderLayout());
-        setSize(400, 400);
+        setSize(500, 300);
         setTitle("Add Movie");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -34,21 +30,14 @@ public final class AddMovie extends JFrame implements ActionListener {
         var labels = Arrays.stream(genres).sorted().toList();
         checkboxes = labels.stream().map(Checkbox::new).toList();
         checkboxes.forEach(middle::add);
-
         JPanel south = new JPanel();
-
         south.add(btnAdd);
-
         add(BorderLayout.NORTH, top);
         add(BorderLayout.CENTER, middle);
         add(BorderLayout.SOUTH, south);
-
-
         btnAdd.addActionListener(this);
         autofocus();
         setVisible(true);
-
-
     }
 
 
@@ -69,9 +58,16 @@ public final class AddMovie extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnAdd) {
+            long count = checkboxes.stream().filter(Checkbox::getState).count();
+            if (count == 0) {
+                JOptionPane.showMessageDialog(null, "Please choose a genre");
+                return;
+            }
+
             System.out.println("Selected genres");
             List<String> selectedGenres = checkboxes.stream().filter(Checkbox::getState).map(Checkbox::getLabel).toList();
             String genreFormatted = String.join("|", selectedGenres);
+            System.out.println(txtTitle.getText() + "  " + genreFormatted);
             System.out.println(genreFormatted);
         }
     }
