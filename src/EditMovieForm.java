@@ -2,20 +2,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.List;
 
 public class EditMovieForm extends JFrame implements ActionListener {
     final int MOVIE_ID = 109;
     DB db = DB.getInstance();
+    final String MOVIE_TITLE = db.getMovieName(MOVIE_ID);
     List<Genre> genreList = db.getAllGenres();
     JTextField txtTitle = new JTextField(20);
-    JButton btnAdd = new JButton("Add Movie");
+    JButton btnUpdateMovie = new JButton("Update Movie");
+    JButton btnReset = new JButton("Undo title");
+
     List<Checkbox> checkboxes;
 
+
     public EditMovieForm() {
-        txtTitle.setText(db.getMovieName(MOVIE_ID));
+        txtTitle.setText(MOVIE_TITLE);
         setTitle("Edit Movie");
         JPanel panel = new JPanel();
         JPanel top = new JPanel();
@@ -24,19 +26,22 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
         top.add(new JLabel("Movie"));
         top.add(txtTitle);
+        top.add(btnReset);
+
         middle.setLayout(new GridLayout(genreList.size(), 2));
         addGenres(middle);
 
         panel.add(top, BorderLayout.NORTH);
         panel.add(middle, BorderLayout.CENTER);
-        panel.add(btnAdd, BorderLayout.SOUTH);
+        panel.add(btnUpdateMovie, BorderLayout.SOUTH);
 
         setContentPane(panel);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 400);
-        btnAdd.addActionListener(this);
-        autofocus();
+        setSize(450, 400);
+        btnUpdateMovie.addActionListener(this);
+        btnReset.addActionListener(this);
+
         setVisible(true);
         ShowSelectedGenres();
     }
@@ -52,26 +57,28 @@ public class EditMovieForm extends JFrame implements ActionListener {
         checkboxes.forEach(middle::add);
     }
 
-    private void autofocus() {
-        addWindowListener(new WindowAdapter() {
-            public void windowOpened(WindowEvent e) {
-                txtTitle.requestFocus();
-            }
-        });
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        boolean hasSelectedGenre = checkboxes.stream().anyMatch(Checkbox::getState);
-        if (txtTitle.getText().trim().isBlank()) {
-            JOptionPane.showMessageDialog(null, "Movie title is required");
-            return;
+        if (e.getSource() == btnUpdateMovie){
+            boolean hasSelectedGenre = checkboxes.stream().anyMatch(Checkbox::getState);
+            if (txtTitle.getText().trim().isBlank()) {
+                JOptionPane.showMessageDialog(null, "Movie title is required");
+                return;
+            }
+            if (!hasSelectedGenre) {
+                JOptionPane.showMessageDialog(null, "Please choose a genre");
+                return;
+            }
+            updateGenres();
+
         }
-        if (!hasSelectedGenre) {
-            JOptionPane.showMessageDialog(null, "Please choose a genre");
-            return;
+
+        if (e.getSource() == btnReset){
+            txtTitle.setText("");
+            txtTitle.setText(MOVIE_TITLE);
         }
-        updateGenres();
+
 
     }
 
