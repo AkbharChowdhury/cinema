@@ -49,8 +49,8 @@ public class DB {
         List<String> list = new ArrayList<>();
         try (var con = connect();
              var stmt = con.prepareStatement("""
-               
-                    select distinct genre from movie_genres natural join genres order by genre;
+                     
+                     select distinct genre from movie_genres natural join genres order by genre;
                      
                      """)) {
             ResultSet rs = stmt.executeQuery();
@@ -64,8 +64,6 @@ public class DB {
         return list;
 
     }
-
-
 
 
     public List<String> genres() {
@@ -98,6 +96,31 @@ public class DB {
                 int id = rs.getInt("movie_id");
                 String title = rs.getString("title");
                 String genres = rs.getString("genres");
+                list.add(new Movie(id, title, genres));
+
+            }
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return list;
+
+    }
+
+
+    public List<Movie> getMovies(String selectedTitle, String selectedGenre) {
+        List<Movie> list = new ArrayList<>();
+        try (Connection con = connect();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(
+                     "SELECT * FROM get_movies('%" + selectedTitle + "%','%" + selectedGenre + "%')"
+             )
+        ) {
+
+            while (rs.next()) {
+                int id = rs.getInt("movie_id");
+                String title = rs.getString("movie_title");
+                String genres = rs.getString("film_genre");
                 list.add(new Movie(id, title, genres));
 
             }
