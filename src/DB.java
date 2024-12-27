@@ -45,6 +45,29 @@ public class DB {
 
     }
 
+    public List<String> getMovieGenres() {
+        List<String> list = new ArrayList<>();
+        try (var con = connect();
+             var stmt = con.prepareStatement("""
+               
+                    select distinct genre from movie_genres natural join genres order by genre;
+                     
+                     """)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getString("genre"));
+
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return list;
+
+    }
+
+
+
+
     public List<String> genres() {
         List<String> list = new ArrayList<>();
         try (Connection con = connect();

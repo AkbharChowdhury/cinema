@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/postgresql-42.7.4.jar!/" />
       <root url="jar://$PROJECT_DIR$/lombok.jar!/" />
+      <root url="jar://$PROJECT_DIR$/commons-lang3-3.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

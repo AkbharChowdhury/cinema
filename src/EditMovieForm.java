@@ -21,13 +21,13 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
     public EditMovieForm() {
         txtTitle.setText(MOVIE_TITLE);
-        setTitle("Edit models.Movie");
+        setTitle("Edit Movie");
         JPanel panel = new JPanel();
         JPanel top = new JPanel();
         JPanel middle = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        top.add(new JLabel("models.Movie"));
+        top.add(new JLabel("Movie"));
         top.add(txtTitle);
         top.add(btnReset);
 
