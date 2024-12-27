@@ -2,12 +2,17 @@ import models.Genre;
 import models.Movie;
 
 import java.sql.*;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DB {
     private DB() {
 
+    }
+
+    private String param(String s) {
+        return MessageFormat.format("%{0}%", s);
     }
 
     private static volatile DB instance;
@@ -112,9 +117,7 @@ public class DB {
         List<Movie> list = new ArrayList<>();
         try (Connection con = connect();
              Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(
-                     "SELECT * FROM get_movies('%" + selectedTitle + "%','%" + selectedGenre + "%')"
-             )
+             ResultSet rs = stmt.executeQuery(STR."SELECT * FROM get_movies('%\{selectedTitle}%','%\{selectedGenre}%')")
         ) {
 
             while (rs.next()) {
