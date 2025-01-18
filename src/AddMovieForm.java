@@ -12,31 +12,31 @@ public class AddMovieForm extends JFrame implements ActionListener {
     DB db = DB.getInstance();
     List<Genre> genreList = db.getAllGenres();
     JTextField txtTitle = new JTextField(20);
-    JButton btnAdd = new JButton("Add models.Movie");
+    JButton btnAddMovie = new JButton("Add Movie");
     List<Checkbox> checkboxes;
 
     public AddMovieForm() {
         setTitle("Add models.Movie");
-        JPanel content = new JPanel();
-        content.setLayout(new BorderLayout());
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
         JPanel middle = new JPanel();
 
         JPanel top = new JPanel();
-        top.add(new JLabel("models.Movie"));
+        top.add(new JLabel("Movie"));
         top.add(txtTitle);
         middle.setLayout(new GridLayout(genreList.size(), 2));
 
         addGenres(middle);
 
-        content.add(top, BorderLayout.NORTH);
-        content.add(middle, BorderLayout.CENTER);
-        content.add(btnAdd, BorderLayout.SOUTH);
+        panel.add(top, BorderLayout.NORTH);
+        panel.add(middle, BorderLayout.CENTER);
+        panel.add(btnAddMovie, BorderLayout.SOUTH);
 
-        setContentPane(content);
+        setContentPane(panel);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 400);
-        btnAdd.addActionListener(this);
+        btnAddMovie.addActionListener(this);
         autofocus();
         setVisible(true);
 
@@ -57,10 +57,10 @@ public class AddMovieForm extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnAdd) {
+        if (e.getSource() == btnAddMovie) {
             boolean hasSelectedGenre = checkboxes.stream().anyMatch(Checkbox::getState);
             if (txtTitle.getText().trim().isBlank()){
-                JOptionPane.showMessageDialog(null, "models.Movie title is required");
+                JOptionPane.showMessageDialog(null, "Movie title is required");
                 return;
             }
             if (!hasSelectedGenre) {
@@ -71,12 +71,14 @@ public class AddMovieForm extends JFrame implements ActionListener {
             List<String> selectedGenres = checkboxes.stream().filter(Checkbox::getState).map(Checkbox::getLabel).toList();
             List<Integer> selectedGenreIDs = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
 
-            String genreFormatted = String.join("|", selectedGenres);
-            db.addMovie(txtTitle.getText().trim(), genreFormatted);
+//            String genreFormatted = String.join("|", selectedGenres);
+            // db.addMovie(txtTitle.getText().trim(), genreFormatted);
+            db.addMovie(txtTitle.getText().trim());
+
             int lastInsertedMovieID = db.getLastID("movie_id", "movies");
             db.addMovieGenres(lastInsertedMovieID, selectedGenreIDs);
             clearForm();
-            JOptionPane.showMessageDialog(null,"models.Movie Added");
+            JOptionPane.showMessageDialog(null,"Movie Added");
         }
     }
 

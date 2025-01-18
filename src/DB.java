@@ -218,11 +218,22 @@ public class DB {
     }
 
 
-    public boolean addMovie(String title, String genres) {
+    // public boolean addMovie(String title, String genres) {
+    //     try (var con = connect();
+    //          var stmt = con.prepareStatement("INSERT INTO movies(title, genres) VALUES(?, ?)")) {
+    //         stmt.setString(1, title);
+    //         stmt.setString(2, genres);
+    //         return stmt.execute();
+    //     } catch (Exception ex) {
+    //         System.err.println(ex.getMessage());
+    //     }
+    //     return false;
+    // }
+
+        public boolean addMovie(String title) {
         try (var con = connect();
-             var stmt = con.prepareStatement("INSERT INTO movies(title,genres) VALUES(?, ?)")) {
+             var stmt = con.prepareStatement("INSERT INTO movies(title) VALUES(?)")) {
             stmt.setString(1, title);
-            stmt.setString(2, genres);
             return stmt.execute();
         } catch (Exception ex) {
             System.err.println(ex.getMessage());

@@ -13,7 +13,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
     final String MOVIE_TITLE = db.getMovieName(MOVIE_ID);
     List<Genre> genreList = db.getAllGenres();
     JTextField txtTitle = new JTextField(20);
-    JButton btnUpdateMovie = new JButton("Update models.Movie");
+    JButton btnUpdateMovie = new JButton("Update Movie");
     JButton btnReset = new JButton("Undo title");
 
     List<Checkbox> checkboxes;
@@ -64,7 +64,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
         if (e.getSource() == btnUpdateMovie){
             boolean hasSelectedGenre = checkboxes.stream().anyMatch(Checkbox::getState);
             if (txtTitle.getText().trim().isBlank()) {
-                JOptionPane.showMessageDialog(null, "models.Movie title is required");
+                JOptionPane.showMessageDialog(null, "Movie title is required");
                 return;
             }
             if (!hasSelectedGenre) {
