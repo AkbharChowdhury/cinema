@@ -13,3 +13,14 @@ CREATE TABLE movie_genres(
 	genre_id INTEGER REFERENCES genres(genre_id),
     PRIMARY KEY(movie_id, genre_id)
 );
+
+
+create or replace view view_all_movies as
+select
+m.movie_id,
+m.title,
+string_agg(DISTINCT g.genre, ' | ') genres
+from movie_genres
+natural join movies m
+natural join genres g
+group by m.movie_id;

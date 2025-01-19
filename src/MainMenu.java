@@ -13,8 +13,8 @@ import java.util.List;
 public class MainMenu extends JFrame implements ActionListener {
     DB db = DB.getInstance();
     List<Movie> movieList = db.movieList();
-    Search search  = new Search(movieList);
-    JButton button = new JButton("Edit");
+    Search search = new Search(movieList);
+    JButton btnEdit = new JButton("Edit");
     JButton btnAdd = new JButton("Add");
     DefaultListModel<String> model = new DefaultListModel<>();
     JList<String> list = new JList<>(model);
@@ -45,13 +45,13 @@ public class MainMenu extends JFrame implements ActionListener {
         middle.add(new JScrollPane(list));
 
         JPanel south = new JPanel();
-        south.add(button);
+        south.add(btnEdit);
         south.add(btnAdd);
         add(BorderLayout.NORTH, top);
         add(BorderLayout.CENTER, middle);
         add(BorderLayout.SOUTH, south);
 
-        button.addActionListener(this);
+        btnEdit.addActionListener(this);
         btnAdd.addActionListener(this);
         comboBox.addActionListener(this);
 
@@ -80,15 +80,18 @@ public class MainMenu extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == button) {
+        if (e.getSource() == btnEdit) {
+            if (list.isSelectionEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please select a movie!");
+                return;
+            }
             MovieInfo.setMovieID(movieList.get(list.getSelectedIndex()).id());
             new EditMovieForm();
         }
-        if (e.getSource() == btnAdd) {
-            new AddMovie();
+        if (e.getSource() == btnAdd) new AddMovie();
 
-        }
-        if (e.getSource() == comboBox){
+
+        if (e.getSource() == comboBox) {
             search.setGenre(comboBox.getSelectedItem().toString());
             populateList();
         }

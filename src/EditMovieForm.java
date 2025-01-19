@@ -85,9 +85,10 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
     private void updateGenres() {
         db.deleteMovieGenre(MOVIE_ID);
-        List<Integer> selectedGenreIDs = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
+        var selectedGenreIDs = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
         db.addMovieGenres(MOVIE_ID, selectedGenreIDs);
         new EditMovieForm();
+        new MainMenu();
 
     }
 

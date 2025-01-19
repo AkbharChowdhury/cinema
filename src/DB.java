@@ -94,7 +94,9 @@ public class DB {
         List<Movie> list = new ArrayList<>();
         try (Connection con = connect();
              Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM view_all_movies")
+
+//             "SELECT * FROM view_all_movies"
+             ResultSet rs = stmt.executeQuery("SELECT * FROM get_movies('%%','%%')")
         ) {
 
             while (rs.next()) {
@@ -113,27 +115,27 @@ public class DB {
     }
 
 
-    public List<Movie> getMovies(String selectedTitle, String selectedGenre) {
-        List<Movie> list = new ArrayList<>();
-        try (Connection con = connect();
-             Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(STR."SELECT * FROM get_movies('%\{selectedTitle}%','%\{selectedGenre}%')")
-        ) {
-
-            while (rs.next()) {
-                int id = rs.getInt("movie_id");
-                String title = rs.getString("movie_title");
-                String genres = rs.getString("film_genre");
-                list.add(new Movie(id, title, genres));
-
-            }
-
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
-        return list;
-
-    }
+//    public List<Movie> getMovies(String selectedTitle, String selectedGenre) {
+//        List<Movie> list = new ArrayList<>();
+//        try (Connection con = connect();
+//             Statement stmt = con.createStatement();
+//             ResultSet rs = stmt.executeQuery(STR."SELECT * FROM get_movies('%\{selectedTitle}%','%\{selectedGenre}%')")
+//        ) {
+//
+//            while (rs.next()) {
+//                int id = rs.getInt("movie_id");
+//                String title = rs.getString("movie_title");
+//                String genres = rs.getString("film_genre");
+//                list.add(new Movie(id, title, genres));
+//
+//            }
+//
+//        } catch (Exception e) {
+//            System.err.println(e.getMessage());
+//        }
+//        return list;
+//
+//    }
 
 
     public List<Genre> getAllGenres() {
@@ -230,16 +232,20 @@ public class DB {
     //     return false;
     // }
 
-        public boolean addMovie(String title) {
-        try (var con = connect();
+    public boolean addMovie(String title) {
+
+        try (Connection con = connect();
              var stmt = con.prepareStatement("INSERT INTO movies(title) VALUES(?)")) {
             stmt.setString(1, title);
-            return stmt.execute();
+            return stmt.executeUpdate() == 1;
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
         return false;
+
     }
+
+
 
 
     public boolean deleteMovieGenre(int movieID) {

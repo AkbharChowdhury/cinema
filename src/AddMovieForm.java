@@ -16,7 +16,7 @@ public class AddMovieForm extends JFrame implements ActionListener {
     List<Checkbox> checkboxes;
 
     public AddMovieForm() {
-        setTitle("Add models.Movie");
+        setTitle("Add Movie");
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         JPanel middle = new JPanel();
