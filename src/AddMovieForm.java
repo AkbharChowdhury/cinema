@@ -70,15 +70,12 @@ public class AddMovieForm extends JFrame implements ActionListener {
 
             List<String> selectedGenres = checkboxes.stream().filter(Checkbox::getState).map(Checkbox::getLabel).toList();
             List<Integer> selectedGenreIDs = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
-
-//            String genreFormatted = String.join("|", selectedGenres);
-            // db.addMovie(txtTitle.getText().trim(), genreFormatted);
             db.addMovie(txtTitle.getText().trim());
-
             int lastInsertedMovieID = db.getLastID("movie_id", "movies");
             db.addMovieGenres(lastInsertedMovieID, selectedGenreIDs);
             clearForm();
             JOptionPane.showMessageDialog(null,"Movie Added");
+            new MainMenu();
         }
     }
 

@@ -1,5 +1,6 @@
 import models.Movie;
 import models.MovieInfo;
+import org.w3c.dom.ls.LSOutput;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,22 +13,24 @@ import java.util.List;
 
 public class MainMenu extends JFrame implements ActionListener {
     DB db = DB.getInstance();
-    List<Movie> movieList = db.movieList();
+    List<Movie> movieList = db.getMovieList();
     Search search = new Search(movieList);
+
     JButton btnEdit = new JButton("Edit");
     JButton btnAdd = new JButton("Add");
+    JButton btnRemove = new JButton("Remove");
+
     DefaultListModel<String> model = new DefaultListModel<>();
     JList<String> list = new JList<>(model);
     JTextField textField = new JTextField(30);
-    JComboBox<String> comboBox = new JComboBox<>();
+    JComboBox<String> comboBoxGenres = new JComboBox<>();
     List<String> genreList = db.getMovieGenres();
 
     public MainMenu() {
         list.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
-
-        setResizable(false);
+        setResizable(true);
         setLayout(new BorderLayout());
-        setSize(600, 300);
+        setSize(650, 300);
         setTitle("Admin Panel");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -36,15 +39,17 @@ public class MainMenu extends JFrame implements ActionListener {
         top.add(textField);
         top.add(new JLabel("Genre"));
 
-        top.add(comboBox);
-        comboBox.addItem("Any");
-        genreList.forEach(comboBox::addItem);
+        top.add(comboBoxGenres);
+        comboBoxGenres.addItem("Any");
+        genreList.forEach(comboBoxGenres::addItem);
 
 
         JPanel middle = new JPanel();
         middle.add(new JScrollPane(list));
 
         JPanel south = new JPanel();
+
+        south.add(btnRemove);
         south.add(btnEdit);
         south.add(btnAdd);
         add(BorderLayout.NORTH, top);
@@ -53,7 +58,8 @@ public class MainMenu extends JFrame implements ActionListener {
 
         btnEdit.addActionListener(this);
         btnAdd.addActionListener(this);
-        comboBox.addActionListener(this);
+        btnRemove.addActionListener(this);
+        comboBoxGenres.addActionListener(this);
 
         populateList();
         list.setPreferredSize(new Dimension(550, 600));
@@ -77,25 +83,39 @@ public class MainMenu extends JFrame implements ActionListener {
         }
     }
 
+    int getMovieID() {
+        return movieList.get(list.getSelectedIndex()).id();
+    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnEdit) {
-            if (list.isSelectionEmpty()) {
-                JOptionPane.showMessageDialog(null, "Please select a movie!");
-                return;
-            }
-            MovieInfo.setMovieID(movieList.get(list.getSelectedIndex()).id());
-            new EditMovieForm();
-        }
-        if (e.getSource() == btnAdd) new AddMovie();
-
-
-        if (e.getSource() == comboBox) {
-            search.setGenre(comboBox.getSelectedItem().toString());
+        if (e.getSource() == btnEdit) editMovie();
+        if (e.getSource() == btnAdd) new AddMovieForm();
+        if (e.getSource() == btnRemove) removeMovie();
+        if (e.getSource() == comboBoxGenres) {
+            search.setGenre(comboBoxGenres.getSelectedItem().toString());
             populateList();
         }
 
+    }
+
+    private void editMovie() {
+        if (list.isSelectionEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please select a movie!");
+            return;
+        }
+        MovieInfo.setMovieID(getMovieID());
+        new EditMovieForm();
+    }
+
+    private void removeMovie() {
+        if (JOptionPane.showConfirmDialog(null, "Are you sure you want to remove this movie?") == JOptionPane.YES_OPTION) {
+            if (db.delete("movies", "movie_id", getMovieID())) {
+                JOptionPane.showMessageDialog(null, "movie deleted");
+                model.remove(list.getSelectedIndex());
+            }
+        }
     }
 
 
@@ -104,7 +124,9 @@ public class MainMenu extends JFrame implements ActionListener {
         for (var movie : search.filterResults()) {
             String content = MessageFormat.format("{0}    {1}", movie.title(), movie.genres());
             model.addElement(content);
+
         }
+
 
     }
 

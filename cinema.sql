@@ -9,10 +9,42 @@ CREATE TABLE movies(
 );
 
 CREATE TABLE movie_genres(
-    movie_id INTEGER REFERENCES movies(movie_id),
-	genre_id INTEGER REFERENCES genres(genre_id),
+    movie_id INTEGER REFERENCES movies(movie_id) ON DELETE CASCADE,
+	genre_id INTEGER REFERENCES genres(genre_id) ON DELETE CASCADE,
     PRIMARY KEY(movie_id, genre_id)
 );
+INSERT INTO genres(genre) VALUES
+('Drama'),
+('Adventure'),
+('Animation'),
+('Action'),
+('Documentary'),
+('Comedy'),
+('Crime'),
+('Sci-Fi'),
+('Romance'),
+('Children'),
+('Horror'),
+('Mystery'),
+('Fantasy'),
+('Musical');
+
+
+-- unique genres
+CREATE EXTENSION IF NOT EXISTS citext;
+ALTER TABLE genres ALTER COLUMN genre TYPE citext;
+
+-- or
+CREATE UNIQUE INDEX genre_unique_idx on genres (LOWER(genre));
+
+
+-- SELECT m.movie_id,
+--    m.title,
+--    string_agg(DISTINCT g.genre::text, ' | '::text) AS genres
+--   FROM movie_genres
+--     JOIN movies m USING (movie_id)
+--     JOIN genres g USING (genre_id)
+--  GROUP BY m.movie_id;
 
 
 create or replace view view_all_movies as

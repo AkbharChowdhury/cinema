@@ -71,6 +71,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Please choose a genre");
                 return;
             }
+
             updateGenres();
 
         }
@@ -79,17 +80,14 @@ public class EditMovieForm extends JFrame implements ActionListener {
             txtTitle.setText("");
             txtTitle.setText(MOVIE_TITLE);
         }
-
-
     }
 
     private void updateGenres() {
-        db.deleteMovieGenre(MOVIE_ID);
-        var selectedGenreIDs = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
+        db.delete("movie_genres", "movie_id", MOVIE_ID);
+        List<Integer> selectedGenreIDs = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
         db.addMovieGenres(MOVIE_ID, selectedGenreIDs);
         new EditMovieForm();
         new MainMenu();
-
     }
 
 

@@ -2,22 +2,15 @@ import models.Genre;
 import models.Movie;
 
 import java.sql.*;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DB {
-    private DB() {
-
-    }
-
-    private String param(String s) {
-        return MessageFormat.format("%{0}%", s);
-    }
+    private DB() {}
 
     private static volatile DB instance;
 
-    Connection connect() {
+    private Connection connect() {
         Connection connection = null;
 
         try {
@@ -90,13 +83,12 @@ public class DB {
     }
 
 
-    public List<Movie> movieList() {
+    public List<Movie> getMovieList() {
         List<Movie> list = new ArrayList<>();
         try (Connection con = connect();
              Statement stmt = con.createStatement();
-
 //             "SELECT * FROM view_all_movies"
-             ResultSet rs = stmt.executeQuery("SELECT * FROM get_movies('%%','%%')")
+             ResultSet rs = stmt.executeQuery("SELECT * FROM fn_get_movies('%%','%%')")
         ) {
 
             while (rs.next()) {
@@ -114,28 +106,6 @@ public class DB {
 
     }
 
-
-//    public List<Movie> getMovies(String selectedTitle, String selectedGenre) {
-//        List<Movie> list = new ArrayList<>();
-//        try (Connection con = connect();
-//             Statement stmt = con.createStatement();
-//             ResultSet rs = stmt.executeQuery(STR."SELECT * FROM get_movies('%\{selectedTitle}%','%\{selectedGenre}%')")
-//        ) {
-//
-//            while (rs.next()) {
-//                int id = rs.getInt("movie_id");
-//                String title = rs.getString("movie_title");
-//                String genres = rs.getString("film_genre");
-//                list.add(new Movie(id, title, genres));
-//
-//            }
-//
-//        } catch (Exception e) {
-//            System.err.println(e.getMessage());
-//        }
-//        return list;
-//
-//    }
 
 
     public List<Genre> getAllGenres() {
@@ -159,7 +129,6 @@ public class DB {
 
 
     public String getMovieName(int movieID) {
-
 
         try (var con = connect();
              var stmt = con.prepareStatement("SELECT title FROM movies WHERE movie_id = ?")) {
@@ -219,19 +188,6 @@ public class DB {
         return 0;
     }
 
-
-    // public boolean addMovie(String title, String genres) {
-    //     try (var con = connect();
-    //          var stmt = con.prepareStatement("INSERT INTO movies(title, genres) VALUES(?, ?)")) {
-    //         stmt.setString(1, title);
-    //         stmt.setString(2, genres);
-    //         return stmt.execute();
-    //     } catch (Exception ex) {
-    //         System.err.println(ex.getMessage());
-    //     }
-    //     return false;
-    // }
-
     public boolean addMovie(String title) {
 
         try (Connection con = connect();
@@ -247,11 +203,10 @@ public class DB {
 
 
 
-
-    public boolean deleteMovieGenre(int movieID) {
+    public boolean delete(String tableName, String idField, int id) {
         try (var con = connect();
-             var stmt = con.prepareStatement("DELETE FROM movie_genres WHERE movie_id = ?")) {
-            stmt.setInt(1, movieID);
+             var stmt = con.prepareStatement(String.format("DELETE FROM %s WHERE %s = ?", tableName, idField))) {
+            stmt.setInt(1, id);
             return stmt.execute();
         } catch (Exception ex) {
             System.err.println(ex.getMessage());

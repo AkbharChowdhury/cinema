@@ -9,8 +9,12 @@ import java.util.function.Predicate;
 
 public final class Search {
 
+    public void setList(List<Movie> list) {
+        this.list = list;
+    }
+
     @Getter
-    private final List<Movie> list;
+    private  List<Movie> list;
 
 
     public void setTitle(String title) {
@@ -31,7 +35,7 @@ public final class Search {
     }
 
     public Search(List<Movie> list) {
-        this.list = Collections.unmodifiableList(list);
+        this.list = list;
     }
 
 
