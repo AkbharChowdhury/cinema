@@ -24,3 +24,27 @@ from movie_genres
 natural join movies m
 natural join genres g
 group by m.movie_id;
+
+
+
+CREATE OR REPLACE FUNCTION fn_get_movies(term VARCHAR, myGenre VARCHAR)
+   RETURNS TABLE (
+        movie_id INTEGER,
+        title VARCHAR,
+        genres VARCHAR
+) 
+AS 
+$$
+SELECT m.movie_id,
+       m.title,
+       string_agg(DISTINCT g.genre, ' | '
+                  ORDER BY genre) genre_list
+FROM movie_genres
+NATURAL JOIN movies m
+NATURAL JOIN genres g
+WHERE title ILIKE term
+GROUP BY m.movie_id
+HAVING string_agg(DISTINCT g.genre, ' | ') ILIKE myGenre
+$$
+LANGUAGE sql;
+SELECT * FROM fn_get_movies('%%','%%');
