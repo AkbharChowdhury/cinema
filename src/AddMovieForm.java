@@ -1,4 +1,5 @@
 import models.Genre;
+import models.MyWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,13 +10,15 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 
 public class AddMovieForm extends JFrame implements ActionListener {
+    private static MainMenu mainMenu;
     DB db = DB.getInstance();
     List<Genre> genreList = db.getAllGenres();
     JTextField txtTitle = new JTextField(20);
     JButton btnAddMovie = new JButton("Add Movie");
     List<Checkbox> checkboxes;
 
-    public AddMovieForm() {
+    public AddMovieForm(MainMenu mainMenuForm) {
+        mainMenu = mainMenuForm;
         setTitle("Add Movie");
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -33,8 +36,7 @@ public class AddMovieForm extends JFrame implements ActionListener {
         panel.add(btnAddMovie, BorderLayout.SOUTH);
 
         setContentPane(panel);
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(MyWindow.getCloseOperation());
         setSize(400, 400);
         btnAddMovie.addActionListener(this);
         autofocus();
@@ -75,7 +77,11 @@ public class AddMovieForm extends JFrame implements ActionListener {
             db.addMovieGenres(lastInsertedMovieID, selectedGenreIDs);
             clearForm();
             JOptionPane.showMessageDialog(null,"Movie Added");
+
+            mainMenu.dispose();
             new MainMenu();
+
+
         }
     }
 
@@ -86,7 +92,7 @@ public class AddMovieForm extends JFrame implements ActionListener {
 
 
     public static void main() {
-        new AddMovieForm();
+        new AddMovieForm(mainMenu);
     }
 
 }

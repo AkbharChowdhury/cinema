@@ -1,5 +1,6 @@
 import models.Movie;
 import models.MovieInfo;
+import models.MyWindow;
 import org.w3c.dom.ls.LSOutput;
 
 import javax.swing.*;
@@ -90,8 +91,9 @@ public class MainMenu extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        MyWindow.setHasOpenMainMenu(true);
         if (e.getSource() == btnEdit) editMovie();
-        if (e.getSource() == btnAdd) new AddMovieForm();
+        if (e.getSource() == btnAdd) new AddMovieForm(MainMenu.this);
         if (e.getSource() == btnRemove) removeMovie();
         if (e.getSource() == comboBoxGenres) {
             search.setGenre(comboBoxGenres.getSelectedItem().toString());
@@ -105,16 +107,16 @@ public class MainMenu extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(null, "Please select a movie!");
             return;
         }
+
         MovieInfo.setMovieID(getMovieID());
-        new EditMovieForm();
+        new EditMovieForm(MainMenu.this);
     }
 
     private void removeMovie() {
         if (JOptionPane.showConfirmDialog(null, "Are you sure you want to remove this movie?") == JOptionPane.YES_OPTION) {
-            if (db.delete("movies", "movie_id", getMovieID())) {
-                JOptionPane.showMessageDialog(null, "movie deleted");
-                model.remove(list.getSelectedIndex());
-            }
+
+            db.delete("movies", "movie_id", getMovieID());
+            model.remove(list.getSelectedIndex());
         }
     }
 

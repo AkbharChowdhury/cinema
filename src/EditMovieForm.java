@@ -1,5 +1,6 @@
 import models.Genre;
 import models.MovieInfo;
+import models.MyWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class EditMovieForm extends JFrame implements ActionListener {
+    private static MainMenu mainMenu;
     final int MOVIE_ID = MovieInfo.getMovieID();
     DB db = DB.getInstance();
     final String MOVIE_TITLE = db.getMovieName(MOVIE_ID);
@@ -19,7 +21,8 @@ public class EditMovieForm extends JFrame implements ActionListener {
     List<Checkbox> checkboxes;
 
 
-    public EditMovieForm() {
+    public EditMovieForm(MainMenu mainMenuForm) {
+        mainMenu = mainMenuForm;
         txtTitle.setText(MOVIE_TITLE);
         setTitle("Edit Movie");
         JPanel panel = new JPanel();
@@ -38,7 +41,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
         panel.add(middle, BorderLayout.CENTER);
         panel.add(btnUpdateMovie, BorderLayout.SOUTH);
         setContentPane(panel);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(MyWindow.getCloseOperation());
         setSize(450, 400);
         btnUpdateMovie.addActionListener(this);
         btnReset.addActionListener(this);
@@ -86,13 +89,14 @@ public class EditMovieForm extends JFrame implements ActionListener {
         db.delete("movie_genres", "movie_id", MOVIE_ID);
         List<Integer> selectedGenreIDs = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
         db.addMovieGenres(MOVIE_ID, selectedGenreIDs);
-        new EditMovieForm();
+        new EditMovieForm(mainMenu);
+        mainMenu.dispose();
         new MainMenu();
     }
 
 
     public static void main() {
-        new EditMovieForm();
+        new EditMovieForm(mainMenu);
     }
 
 }
