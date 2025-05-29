@@ -228,4 +228,22 @@ public class DB {
             System.err.println(ex.getMessage());
         }
     }
+
+
+
+    public int updateMovieTitle(String title, int movieID) {
+        try (var con = connect()) {
+            var stmt = con.prepareStatement("UPDATE movies SET title = ? WHERE  movie_id = ?");
+            stmt.setString(1, title);
+            stmt.setInt(2, movieID);
+            return stmt.executeUpdate();
+
+
+
+
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        return 0;
+    }
 }

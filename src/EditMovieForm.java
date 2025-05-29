@@ -11,6 +11,7 @@ import java.util.List;
 public class EditMovieForm extends JFrame implements ActionListener {
     private static MainMenu mainMenu;
     final int MOVIE_ID = MovieInfo.getMovieID();
+
     DB db = DB.getInstance();
     final String MOVIE_TITLE = db.getMovieName(MOVIE_ID);
     List<Genre> genreList = db.getAllGenres();
@@ -86,8 +87,10 @@ public class EditMovieForm extends JFrame implements ActionListener {
     }
 
     private void updateGenres() {
+        db.updateMovieTitle(txtTitle.getText().trim(), MOVIE_ID);
         db.delete("movie_genres", "movie_id", MOVIE_ID);
         List<Integer> selectedGenreIDs = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
+
         db.addMovieGenres(MOVIE_ID, selectedGenreIDs);
         new EditMovieForm(mainMenu);
         mainMenu.dispose();
@@ -95,8 +98,11 @@ public class EditMovieForm extends JFrame implements ActionListener {
     }
 
 
-    public static void main() {
+
+
+    public static void main(String[] args) {
         new EditMovieForm(mainMenu);
+
     }
 
 }
