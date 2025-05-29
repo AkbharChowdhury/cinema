@@ -80,3 +80,17 @@ HAVING string_agg(DISTINCT g.genre, ' | ') ILIKE myGenre
 $$
 LANGUAGE sql;
 SELECT * FROM fn_get_movies('%%','%%');
+
+
+
+
+
+
+
+
+CREATE OR REPLACE VIEW available_movie_genres AS
+    SELECT DISTINCT genre, mg.genre_id
+    FROM movie_genres mg
+    NATURAL JOIN genres g
+    ORDER BY genre;
+SELECT * FROM available_movie_genres;

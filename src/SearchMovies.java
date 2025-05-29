@@ -3,18 +3,14 @@ import lombok.Getter;
 import models.Movie;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public final class Search {
+public final class SearchMovies {
 
-    public void setList(List<Movie> list) {
-        this.list = list;
-    }
 
     @Getter
-    private  List<Movie> list;
+    private final List<Movie> list;
 
 
     public void setTitle(String title) {
@@ -34,7 +30,7 @@ public final class Search {
         return !"Any".equals(genre) ? p -> StringUtils.containsIgnoreCase(p.genres(), genre) : p -> true;
     }
 
-    public Search(List<Movie> list) {
+    public SearchMovies(List<Movie> list) {
         this.list = list;
     }
 

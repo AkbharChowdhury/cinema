@@ -1,7 +1,6 @@
 import models.Movie;
 import models.MovieInfo;
 import models.MyWindow;
-import org.w3c.dom.ls.LSOutput;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +14,7 @@ import java.util.List;
 public class MainMenu extends JFrame implements ActionListener {
     DB db = DB.getInstance();
     List<Movie> movieList = db.getMovieList();
-    Search search = new Search(movieList);
+    SearchMovies search = new SearchMovies(movieList);
 
     JButton btnEdit = new JButton("Edit");
     JButton btnAdd = new JButton("Add");
@@ -76,15 +75,18 @@ public class MainMenu extends JFrame implements ActionListener {
         });
     }
 
-    public static void main() {
+    public static void main(String[] args) {
         try {
             new MainMenu();
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+
     }
 
+
     int getMovieID() {
+        movieList = search.filterResults();
         return movieList.get(list.getSelectedIndex()).id();
     }
 

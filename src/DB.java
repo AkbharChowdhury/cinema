@@ -16,7 +16,7 @@ public class DB {
         try {
             String dbName = "cinema";
             Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + dbName, "admin", "password");
+            connection = DriverManager.getConnection(String.format("jdbc:postgresql://localhost:5432/%s", dbName) , "admin", "password");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
