@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class DB {
-    private DB() {}
+public class Database {
+    private Database() {}
 
-    private static volatile DB instance;
+    private static volatile Database instance;
 
     private Connection connect() {
         Connection connection = null;
@@ -24,12 +24,12 @@ public class DB {
 
     }
 
-    public static DB getInstance() {
+    public static Database getInstance() {
         try {
             if (instance == null) {
-                synchronized (DB.class) {
+                synchronized (Database.class) {
                     if (instance == null) {
-                        instance = new DB();
+                        instance = new Database();
                     }
                 }
             }

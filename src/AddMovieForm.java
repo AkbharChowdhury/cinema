@@ -9,11 +9,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class AddMovieForm extends JFrame implements ActionListener {
     private static MainMenu mainMenu;
-    DB db = DB.getInstance();
+    Database db = Database.getInstance();
     List<Genre> genreList = db.getAllGenres();
     JTextField txtTitle = new JTextField(20);
     JButton btnAddMovie = new JButton("Add Movie");

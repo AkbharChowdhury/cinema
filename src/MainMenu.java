@@ -12,7 +12,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 public class MainMenu extends JFrame implements ActionListener {
-    DB db = DB.getInstance();
+    Database db = Database.getInstance();
     List<Movie> movieList = db.getMovieList();
     SearchMovies search = new SearchMovies(movieList);
 

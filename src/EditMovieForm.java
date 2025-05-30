@@ -12,7 +12,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
     private static MainMenu mainMenu;
     final int MOVIE_ID = MovieInfo.getMovieID();
 
-    DB db = DB.getInstance();
+    Database db = Database.getInstance();
     final String MOVIE_TITLE = db.getMovieName(MOVIE_ID);
     List<Genre> genreList = db.getAllGenres();
     JTextField txtTitle = new JTextField(20);
