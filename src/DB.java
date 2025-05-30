@@ -1,9 +1,11 @@
 import models.Genre;
 import models.Movie;
+import utils.MyHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class DB {
     private DB() {}
@@ -238,8 +240,20 @@ public class DB {
             stmt.setInt(2, movieID);
             return stmt.executeUpdate();
 
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        return 0;
+    }
 
 
+    public int addMovieAndGenres(String title, Set<Integer> genres) {
+        try (var con = connect()) {
+            var stmt = con.prepareStatement("CALL pr_add_movie_and_genres(?, ?)");
+            Array array = con.createArrayOf("INTEGER", new Object[]{genres.toArray(new Integer[0])});
+            stmt.setString(1, title);
+            stmt.setArray(2, array);
+            return stmt.executeUpdate();
 
         } catch (Exception ex) {
             System.err.println(ex.getMessage());

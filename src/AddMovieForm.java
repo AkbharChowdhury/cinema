@@ -7,7 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AddMovieForm extends JFrame implements ActionListener {
     private static MainMenu mainMenu;
@@ -72,9 +74,7 @@ public class AddMovieForm extends JFrame implements ActionListener {
 
             List<String> selectedGenres = checkboxes.stream().filter(Checkbox::getState).map(Checkbox::getLabel).toList();
             List<Integer> selectedGenreIDs = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
-            db.addMovie(txtTitle.getText().trim());
-            int lastInsertedMovieID = db.getLastID("movie_id", "movies");
-            db.addMovieGenres(lastInsertedMovieID, selectedGenreIDs);
+            db.addMovieAndGenres(txtTitle.getText().trim(), new HashSet<>(selectedGenreIDs));
             clearForm();
             JOptionPane.showMessageDialog(null,"Movie Added");
 
