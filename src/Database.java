@@ -1,23 +1,26 @@
 import models.Genre;
 import models.Movie;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 public class Database {
-    private Database() {}
+    private Database() {
+    }
 
     private static volatile Database instance;
 
     private Connection connect() {
         Connection connection = null;
-        var props = ENVManager.getENV();
+        Properties props = ENVManager.getENV();
 
         try {
             String dbName = "cinema";
             Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(String.format("jdbc:postgresql://localhost:5432/%s", dbName) , props.get("USERNAME").toString(),  props.get("PASSWORD").toString());
+            connection = DriverManager.getConnection(String.format("jdbc:postgresql://localhost:5432/%s", dbName), props.get("USERNAME").toString(), props.get("PASSWORD").toString());
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -105,7 +108,6 @@ public class Database {
         return list;
 
     }
-
 
 
     public List<Genre> getAllGenres() {
@@ -202,7 +204,6 @@ public class Database {
     }
 
 
-
     public boolean delete(String tableName, String idField, int id) {
         try (var con = connect();
              var stmt = con.prepareStatement(String.format("DELETE FROM %s WHERE %s = ?", tableName, idField))) {
@@ -228,7 +229,6 @@ public class Database {
             System.err.println(ex.getMessage());
         }
     }
-
 
 
     public int updateMovieTitle(String title, int movieID) {

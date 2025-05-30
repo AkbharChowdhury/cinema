@@ -1,17 +1,18 @@
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
 public class ENVManager {
     public static Properties getENV(){
-        var props = new Properties();
-        var envFile = Paths.get("src/config.env");
+        Properties props = new Properties();
+        Path envFile = Paths.get("src/config.env");
         try (var inputStream = Files.newInputStream(envFile)) {
             props.load(inputStream);
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException _) {
+            System.err.println("there was an error fetching env data");
         }
         return props;
     }
