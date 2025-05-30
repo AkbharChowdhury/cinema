@@ -87,7 +87,6 @@ public class DB {
         List<Movie> list = new ArrayList<>();
         try (Connection con = connect();
              Statement stmt = con.createStatement();
-//             "SELECT * FROM view_all_movies"
              ResultSet rs = stmt.executeQuery("SELECT * FROM view_all_movies")
         ) {
 
