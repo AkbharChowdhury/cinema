@@ -94,6 +94,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
         db.addMovieGenres(MOVIE_ID, selectedGenreIDs);
         new EditMovieForm(mainMenu);
         mainMenu.dispose();
+        this.dispose();
         new MainMenu();
     }
 
