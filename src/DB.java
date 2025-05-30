@@ -88,7 +88,7 @@ public class DB {
         try (Connection con = connect();
              Statement stmt = con.createStatement();
 //             "SELECT * FROM view_all_movies"
-             ResultSet rs = stmt.executeQuery("SELECT * FROM fn_get_movies('%%','%%')")
+             ResultSet rs = stmt.executeQuery("SELECT * FROM view_all_movies")
         ) {
 
             while (rs.next()) {
@@ -134,10 +134,8 @@ public class DB {
              var stmt = con.prepareStatement("SELECT title FROM movies WHERE movie_id = ?")) {
             stmt.setInt(1, movieID);
             ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                return rs.getString("title");
-
-            }
+            rs.next();
+            return rs.getString("title");
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -179,7 +177,9 @@ public class DB {
              var stmt = con.prepareStatement("SELECT %s FROM %s order by %s desc limit 1".formatted(idField, table, idField))
         ) {
             ResultSet rs = stmt.executeQuery();
-            while (rs.next()) return rs.getInt(idField);
+            rs.next();
+            return rs.getInt(idField);
+
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
