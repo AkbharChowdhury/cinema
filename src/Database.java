@@ -152,18 +152,17 @@ public class Database {
         try (var con = connect();
              var stmt = con.prepareStatement("""
                      
-                     select mg.movie_id, g.genre, g.genre_id
-                     from movie_genres mg
-                     natural join genres g
-                     where mg.movie_id=?
-                     order by g.genre;
+                     SELECT mg.movie_id, g.genre, g.genre_id
+                     FROM movie_genres mg
+                     NATURAL JOIN genres g
+                     WHERE mg.movie_id=?
+                     ORDER BY g.genre;
                      
                      """)) {
             stmt.setInt(1, movieID);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 list.add(rs.getString("genre"));
-
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());

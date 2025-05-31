@@ -1,3 +1,4 @@
+import models.Messages;
 import models.Movie;
 import models.MovieInfo;
 import models.MyWindow;
@@ -9,7 +10,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class MainMenu extends JFrame implements ActionListener {
     Database db = Database.getInstance();
@@ -22,26 +25,30 @@ public class MainMenu extends JFrame implements ActionListener {
 
     DefaultListModel<String> model = new DefaultListModel<>();
     JList<String> list = new JList<>(model);
-    JTextField textField = new JTextField(30);
+    JTextField txtTitle = new JTextField(40);
     JComboBox<String> comboBoxGenres = new JComboBox<>();
-    List<String> genreList = db.getMovieGenres();
+    List<String> genreList = new ArrayList<>(db.getMovieGenres());
+
+
 
     public MainMenu() {
+        List<String> genreList = new ArrayList<>(db.getMovieGenres());
+        genreList.addFirst("Any");
+        comboBoxGenres.setModel(new DefaultComboBoxModel<>(new Vector<>(genreList)));
         list.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
         setResizable(true);
         setLayout(new BorderLayout());
-        setSize(650, 300);
+        setSize(800, 300);
         setTitle("Admin Panel");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         JPanel top = new JPanel();
-        top.add(new JLabel("Movie: "));
-        top.add(textField);
-        top.add(new JLabel("Genre"));
 
+        top.add(new JLabel("Movie: "));
+        top.add(txtTitle);
+        top.add(new JLabel("Genre"));
         top.add(comboBoxGenres);
-        comboBoxGenres.addItem("Any");
-        genreList.forEach(comboBoxGenres::addItem);
+
 
 
         JPanel middle = new JPanel();
@@ -66,10 +73,10 @@ public class MainMenu extends JFrame implements ActionListener {
 
         setVisible(true);
 
-        textField.addKeyListener(new KeyAdapter() {
+        txtTitle.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                search.setTitle(textField.getText());
+                search.setTitle(txtTitle.getText());
                 populateList();
             }
         });
@@ -85,7 +92,7 @@ public class MainMenu extends JFrame implements ActionListener {
     }
 
 
-    int getMovieID() {
+    public int getMovieID() {
         movieList = search.filterResults();
         return movieList.get(list.getSelectedIndex()).id();
     }
@@ -95,7 +102,7 @@ public class MainMenu extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         MyWindow.setHasOpenMainMenu(true);
         if (e.getSource() == btnEdit) editMovie();
-        if (e.getSource() == btnAdd) new AddMovieForm(MainMenu.this);
+        if (e.getSource() == btnAdd) new AddMovieForm(this);
         if (e.getSource() == btnRemove) removeMovie();
         if (e.getSource() == comboBoxGenres) {
             search.setGenre(comboBoxGenres.getSelectedItem().toString());
@@ -106,15 +113,24 @@ public class MainMenu extends JFrame implements ActionListener {
 
     private void editMovie() {
         if (list.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please select a movie!");
+            showMovieRequiredMessage();
             return;
         }
 
         MovieInfo.setMovieID(getMovieID());
         new EditMovieForm(MainMenu.this);
     }
+    private void showMovieRequiredMessage(){
+        Messages.showErrorMessage("Movie required!", "Please select a movie!");
+    }
 
     private void removeMovie() {
+
+        if (list.isSelectionEmpty()) {
+            showMovieRequiredMessage();
+            return;
+        }
+
         if (JOptionPane.showConfirmDialog(null, "Are you sure you want to remove this movie?") == JOptionPane.YES_OPTION) {
 
             db.delete("movies", "movie_id", getMovieID());

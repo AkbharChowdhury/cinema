@@ -1,4 +1,5 @@
 import models.Genre;
+import models.Messages;
 import models.MovieInfo;
 import models.MyWindow;
 
@@ -68,11 +69,14 @@ public class EditMovieForm extends JFrame implements ActionListener {
         if (e.getSource() == btnUpdateMovie){
             boolean hasSelectedGenre = checkboxes.stream().anyMatch(Checkbox::getState);
             if (txtTitle.getText().trim().isBlank()) {
-                JOptionPane.showMessageDialog(null, "Movie title is required");
+                Messages.showErrorMessage("Title required!", "Movie title is required");
+
                 return;
+
             }
             if (!hasSelectedGenre) {
-                JOptionPane.showMessageDialog(null, "Please choose a genre");
+                Messages.showErrorMessage("Genre required!", "Please choose a genre");
+
                 return;
             }
 
