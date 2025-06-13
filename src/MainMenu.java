@@ -131,8 +131,7 @@ public class MainMenu extends JFrame implements ActionListener {
             return;
         }
 
-        if (JOptionPane.showConfirmDialog(null, "Are you sure you want to remove this movie?") == JOptionPane.YES_OPTION) {
-
+        if (Messages.hasConfirmed.apply("Are you sure you want to remove this movie?")) {
             db.delete("movies", "movie_id", getMovieID());
             model.remove(list.getSelectedIndex());
             search.setList(db.getMovieList());
@@ -151,8 +150,7 @@ public class MainMenu extends JFrame implements ActionListener {
 
     }
 
- 
+
 }
 
 
-}
