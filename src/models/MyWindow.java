@@ -3,6 +3,7 @@ package models;
 import javax.swing.*;
 
 public class MyWindow {
+
     private static boolean hasOpenMainMenu;
 
 
@@ -16,4 +17,5 @@ public class MyWindow {
     public static int getCloseOperation(){
        return hasOpenMainMenu ? JFrame.DISPOSE_ON_CLOSE : JFrame.EXIT_ON_CLOSE;
     }
+
 }

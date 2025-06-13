@@ -1,4 +1,5 @@
 import models.Genre;
+import models.Messages;
 import models.MyWindow;
 
 import javax.swing.*;
@@ -12,11 +13,11 @@ import java.util.List;
 
 public class AddMovieForm extends JFrame implements ActionListener {
     private static MainMenu mainMenu;
-    Database db = Database.getInstance();
-    List<Genre> genreList = db.getAllGenres();
-    JTextField txtTitle = new JTextField(20);
-    JButton btnAddMovie = new JButton("Add Movie");
-    List<Checkbox> checkboxes;
+    private final Database db = Database.getInstance();
+    private final List<Genre> genres = db.getAllGenres();
+    private final JTextField txtTitle = new JTextField(20);
+    private final JButton btnAddMovie = new JButton("Add Movie");
+    private final List<Checkbox> checkboxes;
 
     public AddMovieForm(MainMenu mainMenuForm) {
         mainMenu = mainMenuForm;
@@ -28,9 +29,10 @@ public class AddMovieForm extends JFrame implements ActionListener {
         JPanel top = new JPanel();
         top.add(new JLabel("Movie"));
         top.add(txtTitle);
-        middle.setLayout(new GridLayout(genreList.size(), 2));
+        middle.setLayout(new GridLayout(genres.size(), 2));
 
-        addGenres(middle);
+        checkboxes = genres.stream().map(genre -> new Checkbox(genre.type())).toList();
+        checkboxes.forEach(middle::add);
 
         panel.add(top, BorderLayout.NORTH);
         panel.add(middle, BorderLayout.CENTER);
@@ -45,10 +47,6 @@ public class AddMovieForm extends JFrame implements ActionListener {
 
     }
 
-    private void addGenres(JPanel middle) {
-        checkboxes = genreList.stream().map(genre -> new Checkbox(genre.type())).toList();
-        checkboxes.forEach(middle::add);
-    }
 
     private void autofocus() {
         addWindowListener(new WindowAdapter() {
@@ -60,41 +58,41 @@ public class AddMovieForm extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnAddMovie) {
-            boolean hasSelectedGenre = checkboxes.stream().anyMatch(Checkbox::getState);
-            if (txtTitle.getText().trim().isBlank()){
-                JOptionPane.showMessageDialog(null, "Movie title is required");
-                return;
-            }
-            if (!hasSelectedGenre) {
-                JOptionPane.showMessageDialog(null, "Please choose a genre");
-                return;
-            }
-
-            List<String> selectedGenres = checkboxes.stream().filter(Checkbox::getState).map(Checkbox::getLabel).toList();
-            List<Integer> selectedGenreIDs = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
-            boolean hasAddedMovie = db.addMovieAndGenres(txtTitle.getText().trim(), new HashSet<>(selectedGenreIDs));
-            if (!hasAddedMovie){
-                JOptionPane.showMessageDialog(null,"There was an error adding the movie");
-                return;
-            }
-            clearForm();
-            JOptionPane.showMessageDialog(null,"Movie Added");
-
-            mainMenu.dispose();
-            this.dispose();
-            new MainMenu();
-
-
+        boolean hasSelectedGenre = Genre.hasSelectedGenre.apply(checkboxes);
+        if (txtTitle.getText().trim().isBlank()) {
+            Messages.showErrorMessage("", "Movie title is required");
+            return;
         }
+        if (!hasSelectedGenre) {
+            Messages.showErrorMessage("", "Please choose a genre");
+            return;
+        }
+
+//        List<String> selectedGenres = checkboxes.stream().filter(Checkbox::getState).map(Checkbox::getLabel).toList();
+        List<Integer> selectedGenreIDs = Genre.getSelectedGenres(checkboxes, genres).stream().map(Genre::id).toList();
+        boolean hasAddedMovie = db.addMovieAndGenres(txtTitle.getText().trim(), new HashSet<>(selectedGenreIDs));
+        if (!hasAddedMovie) {
+            Messages.showErrorMessage("", "There was an error adding the movie");
+            return;
+        }
+        clearForm();
+        Messages.message("Movie Added");
+
+        redirectToMainMenu();
+
+
+    }
+
+    private void redirectToMainMenu() {
+        if (mainMenu != null) mainMenu.dispose();
+        this.dispose();
+        new MainMenu();
     }
 
     private void clearForm() {
         txtTitle.setText("");
         checkboxes.forEach(checkbox -> checkbox.setState(false));
     }
-
-
 
 
     public static void main(String[] args) {
