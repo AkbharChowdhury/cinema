@@ -19,6 +19,7 @@ public class MainMenu extends JFrame implements ActionListener {
     List<Movie> movieList = db.getMovieList();
     SearchMovies search = new SearchMovies(movieList);
 
+
     JButton btnEdit = new JButton("Edit");
     JButton btnAdd = new JButton("Add");
     JButton btnRemove = new JButton("Remove");
@@ -27,28 +28,26 @@ public class MainMenu extends JFrame implements ActionListener {
     JList<String> list = new JList<>(model);
     JTextField txtTitle = new JTextField(40);
     JComboBox<String> comboBoxGenres = new JComboBox<>();
-    List<String> genreList = new ArrayList<>(db.getMovieGenres());
-
 
 
     public MainMenu() {
+        list.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+
         List<String> genreList = new ArrayList<>(db.getMovieGenres());
         genreList.addFirst("Any");
         comboBoxGenres.setModel(new DefaultComboBoxModel<>(new Vector<>(genreList)));
-        list.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
         setResizable(true);
         setLayout(new BorderLayout());
         setSize(800, 300);
         setTitle("Admin Panel");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        JPanel top = new JPanel();
 
+        JPanel top = new JPanel();
         top.add(new JLabel("Movie: "));
         top.add(txtTitle);
         top.add(new JLabel("Genre"));
         top.add(comboBoxGenres);
-
 
 
         JPanel middle = new JPanel();
@@ -120,7 +119,8 @@ public class MainMenu extends JFrame implements ActionListener {
         MovieInfo.setMovieID(getMovieID());
         new EditMovieForm(MainMenu.this);
     }
-    private void showMovieRequiredMessage(){
+
+    private void showMovieRequiredMessage() {
         Messages.showErrorMessage("Movie required!", "Please select a movie!");
     }
 
@@ -135,6 +135,7 @@ public class MainMenu extends JFrame implements ActionListener {
 
             db.delete("movies", "movie_id", getMovieID());
             model.remove(list.getSelectedIndex());
+            search.setList(db.getMovieList());
         }
     }
 
@@ -149,6 +150,9 @@ public class MainMenu extends JFrame implements ActionListener {
 
 
     }
+
+ 
+}
 
 
 }

@@ -10,8 +10,15 @@ public final class SearchMovies {
 
 
     @Getter
-    private final List<Movie> list;
+    private List<Movie> list;
 
+    public void setList(List<Movie> list) {
+        this.list = list;
+    }
+
+    public List<Movie> getList() {
+        return list;
+    }
 
     public void setTitle(String title) {
         this.title = title;
