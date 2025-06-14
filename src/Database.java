@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+
 import static models.Messages.errorMsg;
 
 public class Database {
@@ -138,14 +139,16 @@ public class Database {
 
     public String getMovieName(int movieID) {
 
-        try (var con = connect();
-             var stmt = con.prepareStatement("SELECT title FROM movies WHERE movie_id = ?")) {
+        try (var con = connect(); var stmt = con.prepareStatement("SELECT title FROM movies WHERE movie_id = ?")) {
             stmt.setInt(1, movieID);
-            ResultSet rs = stmt.executeQuery();
-            rs.next();
-            return rs.getString("title");
+            try (var rs = stmt.executeQuery()) {
+                rs.next();
+                return rs.getString("title");
+            }
+
+
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            errorMsg(e.getMessage());
         }
         return "error fetching movie name by movie id";
 
@@ -171,7 +174,7 @@ public class Database {
                 list.add(rs.getString("genre"));
             }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            errorMsg(e.getMessage());
         }
         return list;
 
@@ -181,15 +184,15 @@ public class Database {
     public int getLastID(String idField, String table) {
 
         try (Connection con = connect();
-             var stmt = con.prepareStatement("SELECT %s FROM %s order by %s desc limit 1".formatted(idField, table, idField))
+             var stmt = con.prepareStatement("SELECT %s FROM %s ORDER BY %s DESC LIMIT 1".formatted(idField, table, idField))
         ) {
             ResultSet rs = stmt.executeQuery();
             rs.next();
             return rs.getInt(idField);
 
 
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+        } catch (Exception ex) {
+            errorMsg(ex.getMessage());
         }
 
         return 0;
@@ -202,7 +205,7 @@ public class Database {
             stmt.setString(1, title);
             return stmt.executeUpdate() == 1;
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            errorMsg(ex.getMessage());
         }
         return false;
 
@@ -215,7 +218,7 @@ public class Database {
             stmt.setInt(1, id);
             return stmt.execute();
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            errorMsg(ex.getMessage());
         }
         return false;
     }
@@ -231,7 +234,7 @@ public class Database {
             }
 
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            errorMsg(ex.getMessage());
         }
     }
 
@@ -244,7 +247,7 @@ public class Database {
             return stmt.executeUpdate();
 
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            errorMsg(ex.getMessage());
         }
         return 0;
     }
@@ -259,7 +262,7 @@ public class Database {
             return stmt.executeUpdate() == -1;
 
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            errorMsg(ex.getMessage());
         }
         return false;
     }
