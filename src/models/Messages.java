@@ -11,6 +11,10 @@ public class Messages {
     public static void showErrorMessage(String title, String message) {
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
     }
+    public static void errorMsg(String msg){
+        System.err.println(msg);
+    }
+
 
 
 

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import static models.Messages.errorMsg;
+
 public class Database {
     private Database() {
     }
@@ -22,7 +24,7 @@ public class Database {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(String.format("jdbc:postgresql://localhost:5432/%s", dbName), props.get("USERNAME").toString(), props.get("PASSWORD").toString());
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            errorMsg(ex.getMessage());
         }
         return connection;
 
@@ -39,7 +41,8 @@ public class Database {
             }
         } catch (Exception ex) {
 
-            System.err.println(ex.getMessage());
+            errorMsg(ex.getMessage());
+
         }
 
         return instance;
@@ -52,7 +55,7 @@ public class Database {
         try (var con = connect();
              var stmt = con.prepareStatement("""
                      
-                     select distinct genre from movie_genres natural join genres order by genre;
+                     SELECT DISTINCT genre FROM movie_genres NATURAL JOIN genres ORDER BY genre;
                      
                      """)) {
             ResultSet rs = stmt.executeQuery();
@@ -61,7 +64,7 @@ public class Database {
 
             }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            errorMsg(e.getMessage());
         }
         return list;
 
@@ -80,7 +83,8 @@ public class Database {
             }
 
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            errorMsg(e.getMessage());
+
         }
         return list;
 
@@ -103,7 +107,8 @@ public class Database {
             }
 
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            errorMsg(e.getMessage());
+
         }
         return list;
 
@@ -123,7 +128,8 @@ public class Database {
             }
 
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            errorMsg(e.getMessage());
+
         }
         return list;
 
