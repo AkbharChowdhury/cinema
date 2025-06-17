@@ -102,7 +102,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
     private void redirectToMainMenu() {
         if (mainMenu != null) mainMenu.dispose();
         this.dispose();
-        new MainMenu();
+        new MainMenuWithTable();
     }
 
 
