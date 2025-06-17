@@ -8,7 +8,8 @@ public enum MovieEnum {
     MovieEnum(int column) {
         this.column = column;
     }
-    public int getValue(){
+
+    public int getValue() {
         return this.column;
     }
 

@@ -10,7 +10,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
 import dbs.Database;
+
 public class EditMovieForm extends JFrame implements ActionListener {
     private static MainMenuWithTable mainMenu;
     final int MOVIE_ID = MovieInfo.getMovieID();
@@ -68,7 +70,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnUpdateMovie){
+        if (e.getSource() == btnUpdateMovie) {
             boolean hasSelectedGenre = Genre.hasSelectedGenre.apply(checkboxes);
             if (txtTitle.getText().trim().isBlank()) {
                 Messages.showErrorMessage("Title required!", "Movie title is required");
@@ -83,7 +85,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
         }
 
-        if (e.getSource() == btnUndoTitle){
+        if (e.getSource() == btnUndoTitle) {
             txtTitle.setText("");
             txtTitle.setText(MOVIE_TITLE);
         }
@@ -101,11 +103,9 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
     private void redirectToMainMenu() {
         if (mainMenu != null) mainMenu.dispose();
-        this.dispose();
+        dispose();
         new MainMenuWithTable();
     }
-
-
 
 
     public static void main(String[] args) {
