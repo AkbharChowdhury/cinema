@@ -1,9 +1,6 @@
 package forms;
 
-import models.Genre;
-import models.Messages;
-import models.MovieInfo;
-import models.MyWindow;
+import models.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,6 +48,9 @@ public class EditMovieForm extends JFrame implements ActionListener {
         setSize(450, 400);
         btnUpdateMovie.addActionListener(this);
         btnUndoTitle.addActionListener(this);
+
+        MyButton.handCursor.accept(List.of(btnUpdateMovie, btnUndoTitle, btnUpdateMovie));
+
 
         setVisible(true);
         ShowSelectedGenres();

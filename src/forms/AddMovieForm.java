@@ -2,6 +2,7 @@ package forms;
 
 import models.Genre;
 import models.Messages;
+import models.MyButton;
 import models.MyWindow;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import dbs.Database;
@@ -44,6 +46,8 @@ public class AddMovieForm extends JFrame implements ActionListener {
         setDefaultCloseOperation(MyWindow.getCloseOperation());
         setSize(400, 400);
         btnAddMovie.addActionListener(this);
+        MyButton.handCursor.accept(List.of(btnAddMovie));
+
         autofocus();
         setVisible(true);
 

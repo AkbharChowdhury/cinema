@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -87,6 +88,7 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
         south.add(btnEdit);
         south.add(btnAdd);
 
+
         add(BorderLayout.NORTH, top);
         add(BorderLayout.CENTER, middle);
         add(BorderLayout.SOUTH, south);
@@ -94,7 +96,9 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
         btnEdit.addActionListener(this);
         btnAdd.addActionListener(this);
         btnRemove.addActionListener(this);
+        MyButton.handCursor.accept(List.of(btnEdit, btnAdd, btnRemove));
         comboBoxGenres.addActionListener(this);
+
 
         populateList();
         setVisible(true);
@@ -184,7 +188,7 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
             Movie movie = movies.get(i);
             tableModel.addRow(new Object[0]);
             tableModel.setValueAt(movie.title(), i, MovieEnum.TITLE.getValue());
-            tableModel.setValueAt(movie.genres(), i,MovieEnum.GENRE.getValue() );
+            tableModel.setValueAt(movie.genres(), i, MovieEnum.GENRE.getValue());
 
 
         }
