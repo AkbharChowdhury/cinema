@@ -1,3 +1,5 @@
+package forms;
+
 import models.Genre;
 import models.Messages;
 import models.MyWindow;
@@ -10,16 +12,16 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashSet;
 import java.util.List;
-
+import dbs.Database;
 public class AddMovieForm extends JFrame implements ActionListener {
-    private static MainMenu mainMenu;
+    private static MainMenuWithTable mainMenu;
     private final Database db = Database.getInstance();
     private final List<Genre> genres = db.getAllGenres();
     private final JTextField txtTitle = new JTextField(20);
     private final JButton btnAddMovie = new JButton("Add Movie");
     private final List<Checkbox> checkboxes;
 
-    public AddMovieForm(MainMenu mainMenuForm) {
+    public AddMovieForm(MainMenuWithTable mainMenuForm) {
         mainMenu = mainMenuForm;
         setTitle("Add Movie");
         JPanel panel = new JPanel();

@@ -1,6 +1,6 @@
+package models;
 
 import lombok.Getter;
-import models.Movie;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

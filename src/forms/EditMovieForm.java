@@ -1,3 +1,5 @@
+package forms;
+
 import models.Genre;
 import models.Messages;
 import models.MovieInfo;
@@ -8,9 +10,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-
+import dbs.Database;
 public class EditMovieForm extends JFrame implements ActionListener {
-    private static MainMenu mainMenu;
+    private static MainMenuWithTable mainMenu;
     final int MOVIE_ID = MovieInfo.getMovieID();
 
     Database db = Database.getInstance();
@@ -23,7 +25,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
     List<Checkbox> checkboxes;
 
 
-    public EditMovieForm(MainMenu mainMenuForm) {
+    public EditMovieForm(MainMenuWithTable mainMenuForm) {
         mainMenu = mainMenuForm;
         txtTitle.setText(MOVIE_TITLE);
         setTitle("Edit Movie");

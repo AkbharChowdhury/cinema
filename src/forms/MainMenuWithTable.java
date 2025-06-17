@@ -1,20 +1,21 @@
-import models.Messages;
-import models.Movie;
-import models.MovieInfo;
-import models.MyWindow;
+package forms;
+
+import dbs.Database;
+import models.*;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class MainMenu extends JFrame implements ActionListener {
+
+public class MainMenuWithTable extends JFrame implements ActionListener {
     Database db = Database.getInstance();
     List<Movie> movieList = db.getMovieList();
     SearchMovies search = new SearchMovies(movieList);
@@ -29,8 +30,26 @@ public class MainMenu extends JFrame implements ActionListener {
     JTextField txtTitle = new JTextField(40);
     JComboBox<String> comboBoxGenres = new JComboBox<>();
 
+    JTable table = new JTable();
+    DefaultTableModel model2 = (DefaultTableModel) table.getModel();
 
-    public MainMenu() {
+
+    public MainMenuWithTable() {
+
+        // table prop
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(table);
+
+        List<String> columns = new ArrayList<>();
+        columns.add("Title");
+        columns.add("Genres");
+
+        columns.forEach(model2::addColumn);
+
+//        list.forEach(model2::addColumn);
+
+
         list.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
 
         List<String> genreList = new ArrayList<>(db.getMovieGenres());
@@ -51,7 +70,9 @@ public class MainMenu extends JFrame implements ActionListener {
 
 
         JPanel middle = new JPanel();
-        middle.add(new JScrollPane(list));
+//        middle.add(new JScrollPane(list));
+        middle.add(new JScrollPane(scrollPane));
+
 
         JPanel south = new JPanel();
 
@@ -83,7 +104,7 @@ public class MainMenu extends JFrame implements ActionListener {
 
     public static void main(String[] args) {
         try {
-            new MainMenu();
+            new MainMenuWithTable();
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -117,7 +138,7 @@ public class MainMenu extends JFrame implements ActionListener {
         }
 
         MovieInfo.setMovieID(getMovieID());
-        new EditMovieForm(MainMenu.this);
+        new EditMovieForm(MainMenuWithTable.this);
     }
 
     private void showMovieRequiredMessage() {
@@ -139,14 +160,28 @@ public class MainMenu extends JFrame implements ActionListener {
     }
 
 
-    public void populateList() {
-        model.clear();
-        for (var movie : search.filterResults()) {
-            String content = MessageFormat.format("{0}    {1}", movie.title(), movie.genres());
-            model.addElement(content);
+    //    public void populateList() {
+//        model.clear();
+//        for (var movie : search.filterResults()) {
+//            String content = MessageFormat.format("{0}    {1}", movie.title(), movie.genres());
+//            model.addElement(content);
+//
+//        }
+//
+//
+//    }
+    void populateList() {
+        ((DefaultTableModel) table.getModel()).setRowCount(0);
+        List<Movie> movies = search.filterResults();
+        int movieSize = movies.size();
+        for (int i = 0; i < movieSize; i++) {
+            Movie movie = movies.get(i);
+            model2.addRow(new Object[0]);
+            model2.setValueAt(movie.title(), i, 0);
+            model2.setValueAt(movie.genres(), i, 1);
+
 
         }
-
 
     }
 
