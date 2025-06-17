@@ -40,7 +40,6 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
     };
 
 
-
     void tableProp() {
 
         table.setModel(tableModel);
@@ -64,17 +63,9 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
 
     public MainMenuWithTable() {
 
-        // table prop
-
         tableProp();
 
-
-
-
-
-        List<String> genreList = new ArrayList<>(db.getMovieGenres());
-        genreList.addFirst("Any");
-        comboBoxGenres.setModel(new DefaultComboBoxModel<>(new Vector<>(genreList)));
+        comboBoxGenres.setModel(new DefaultComboBoxModel<>(new Vector<>(getGenres())));
         setResizable(true);
         setLayout(new BorderLayout());
         setSize(800, 500);
@@ -88,16 +79,14 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
         top.add(new JLabel("Genre"));
         top.add(comboBoxGenres);
 
-
         JPanel middle = new JPanel();
         middle.add(new JScrollPane(tableScrollPane()));
-
-
         JPanel south = new JPanel();
 
         south.add(btnRemove);
         south.add(btnEdit);
         south.add(btnAdd);
+
         add(BorderLayout.NORTH, top);
         add(BorderLayout.CENTER, middle);
         add(BorderLayout.SOUTH, south);
@@ -119,6 +108,12 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
         });
     }
 
+    private List<String> getGenres() {
+        List<String> genres = new ArrayList<>(db.getMovieGenres());
+        genres.addFirst("Any");
+        return genres;
+    }
+
     public static void main(String[] args) {
         try {
             new MainMenuWithTable();
@@ -127,8 +122,6 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
         }
 
     }
-
-
 
 
     @Override
@@ -176,7 +169,7 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
         }
 
         if (Messages.hasConfirmed.apply("Are you sure you want to remove this movie?")) {
-            db.delete("movies", "movie_id",  getSelectedMovieID());
+            db.delete("movies", "movie_id", getSelectedMovieID());
             tableModel.removeRow(table.getSelectedRow());
             search.setList(db.getMovieList());
         }
@@ -191,7 +184,7 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
             Movie movie = movies.get(i);
             tableModel.addRow(new Object[0]);
             tableModel.setValueAt(movie.title(), i, MovieEnum.TITLE.getValue());
-            tableModel.setValueAt(movie.genres(), i, MovieEnum.GENRE.getValue());
+            tableModel.setValueAt(movie.genres(), i,MovieEnum.GENRE.getValue() );
 
 
         }
