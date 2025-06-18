@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -41,30 +40,18 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
     };
 
 
-    void tableProp() {
+    void tableProperties() {
 
         table.setModel(tableModel);
-
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        table.setPreferredSize(new Dimension(550, 600));
-
-        List<String> columns = new ArrayList<>();
-        columns.add("Title");
-        columns.add("Genres");
-        columns.forEach(tableModel::addColumn);
-    }
-
-    JScrollPane tableScrollPane() {
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setViewportView(table);
-        return scrollPane;
+        table.setPreferredSize(new Dimension(700, 600));
+        List.of("Title", "Genres").forEach(tableModel::addColumn);
     }
 
 
     public MainMenuWithTable() {
 
-        tableProp();
+        tableProperties();
 
         comboBoxGenres.setModel(new DefaultComboBoxModel<>(new Vector<>(getGenres())));
         setResizable(true);
@@ -81,12 +68,12 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
         top.add(comboBoxGenres);
 
         JPanel middle = new JPanel();
-        middle.add(new JScrollPane(tableScrollPane()));
-        JPanel south = new JPanel();
+        middle.add(new JScrollPane(table));
 
-        south.add(btnRemove);
-        south.add(btnEdit);
+        JPanel south = new JPanel();
         south.add(btnAdd);
+        south.add(btnEdit);
+        south.add(btnRemove);
 
 
         add(BorderLayout.NORTH, top);
@@ -112,18 +99,14 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
         });
     }
 
-    private List<String> getGenres() {
+    List<String> getGenres() {
         List<String> genres = new ArrayList<>(db.getMovieGenres());
         genres.addFirst("Any");
         return genres;
     }
 
     public static void main(String[] args) {
-        try {
-            new MainMenuWithTable();
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+        new MainMenuWithTable();
 
     }
 
@@ -161,11 +144,11 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
         return movieList.get(selectedIndex).id();
     }
 
-    private void showMovieRequiredMessage() {
+    void showMovieRequiredMessage() {
         Messages.showErrorMessage("Movie required!", "Please select a movie!");
     }
 
-    private void removeMovie() {
+    void removeMovie() {
 
         if (isSelectionRequired()) {
             showMovieRequiredMessage();
