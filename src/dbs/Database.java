@@ -55,19 +55,21 @@ public class Database {
     public List<String> getMovieGenres() {
         List<String> list = new ArrayList<>();
         try (var con = connect();
-             var stmt = con.prepareStatement("""
-                     
-                     SELECT DISTINCT genre FROM movie_genres NATURAL JOIN genres ORDER BY genre;
-                     
-                     """)) {
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                list.add(rs.getString("genre"));
+             var stmt = con.prepareStatement("SELECT DISTINCT genre FROM movie_genres NATURAL JOIN genres ORDER BY genre;")) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(rs.getString("genre"));
+
+                }
 
             }
-        } catch (Exception e) {
-            errorMsg(e.getMessage());
+
+
+        } catch (SQLException e) {
+            errorMsg(String.format("There was an error with fetching genres %s", e.getMessage()));
         }
+
+
         return list;
 
     }
