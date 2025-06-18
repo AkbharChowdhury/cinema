@@ -1,4 +1,3 @@
-package forms;
 
 import models.*;
 
@@ -6,12 +5,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.List;
 
-import dbs.Database;
-
 public class EditMovieForm extends JFrame implements ActionListener {
-    private static MainMenuWithTable mainMenu;
+    private static MainMenu mainMenu;
     final int MOVIE_ID = MovieInfo.getMovieID();
 
     Database db = Database.getInstance();
@@ -21,10 +19,13 @@ public class EditMovieForm extends JFrame implements ActionListener {
     JButton btnUpdateMovie = new JButton("Update Movie");
     JButton btnUndoTitle = new JButton("Undo title");
 
+    JButton[] buttons = {btnUpdateMovie, btnUndoTitle};
+
+
     List<Checkbox> checkboxes;
 
 
-    public EditMovieForm(MainMenuWithTable mainMenuForm) {
+    public EditMovieForm(MainMenu mainMenuForm) {
         mainMenu = mainMenuForm;
         txtTitle.setText(MOVIE_TITLE);
         setTitle("Edit Movie");
@@ -46,10 +47,10 @@ public class EditMovieForm extends JFrame implements ActionListener {
         setContentPane(panel);
         setDefaultCloseOperation(MyWindow.getCloseOperation());
         setSize(450, 400);
-        btnUpdateMovie.addActionListener(this);
-        btnUndoTitle.addActionListener(this);
+        Arrays.stream(buttons).forEach(button -> button.addActionListener(this));
 
-        MyButton.handCursor.accept(List.of(btnUpdateMovie, btnUndoTitle, btnUpdateMovie));
+
+        MyButton.handCursor.accept(buttons);
 
 
         setVisible(true);
@@ -104,7 +105,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
     private void redirectToMainMenu() {
         if (mainMenu != null) mainMenu.dispose();
         dispose();
-        new MainMenuWithTable();
+        new MainMenu();
     }
 
 

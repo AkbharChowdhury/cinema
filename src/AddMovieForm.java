@@ -1,4 +1,3 @@
-package forms;
 
 import models.Genre;
 import models.Messages;
@@ -11,19 +10,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import dbs.Database;
+
 public class AddMovieForm extends JFrame implements ActionListener {
-    private static MainMenuWithTable mainMenu;
+    private static MainMenu mainMenu;
     private final Database db = Database.getInstance();
     private final List<Genre> genres = db.getAllGenres();
     private final JTextField txtTitle = new JTextField(20);
     private final JButton btnAddMovie = new JButton("Add Movie");
     private final List<Checkbox> checkboxes;
 
-    public AddMovieForm(MainMenuWithTable mainMenuForm) {
+    public AddMovieForm(MainMenu mainMenuForm) {
         mainMenu = mainMenuForm;
         setTitle("Add Movie");
         JPanel panel = new JPanel();
@@ -46,7 +44,8 @@ public class AddMovieForm extends JFrame implements ActionListener {
         setDefaultCloseOperation(MyWindow.getCloseOperation());
         setSize(400, 400);
         btnAddMovie.addActionListener(this);
-        MyButton.handCursor.accept(List.of(btnAddMovie));
+        MyButton.handCursor.accept(new JButton[]{btnAddMovie});
+
 
         autofocus();
         setVisible(true);
@@ -92,7 +91,7 @@ public class AddMovieForm extends JFrame implements ActionListener {
     private void redirectToMainMenu() {
         if (mainMenu != null) mainMenu.dispose();
         dispose();
-        new MainMenuWithTable();
+        new MainMenu();
     }
 
     private void clearForm() {

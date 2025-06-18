@@ -1,7 +1,5 @@
-package forms;
-
-import dbs.Database;
 import enums.MovieEnum;
+
 import models.*;
 
 import javax.swing.*;
@@ -12,19 +10,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
 
-public class MainMenuWithTable extends JFrame implements ActionListener {
+public class MainMenu extends JFrame implements ActionListener {
     Database db = Database.getInstance();
     List<Movie> movieList = db.getMovieList();
     SearchMovies search = new SearchMovies(movieList);
 
-
-    JButton btnEdit = new JButton("Edit");
     JButton btnAdd = new JButton("Add");
+    JButton btnEdit = new JButton("Edit");
     JButton btnRemove = new JButton("Remove");
+    JButton[] buttons = {btnAdd, btnEdit, btnRemove};
 
     JTextField txtTitle = new JTextField(40);
     JComboBox<String> comboBoxGenres = new JComboBox<>();
@@ -40,7 +39,7 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
     };
 
 
-    void tableProperties() {
+    private void tableProperties() {
 
         table.setModel(tableModel);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -49,7 +48,7 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
     }
 
 
-    public MainMenuWithTable() {
+    public MainMenu() {
 
         tableProperties();
 
@@ -71,20 +70,16 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
         middle.add(new JScrollPane(table));
 
         JPanel south = new JPanel();
-        south.add(btnAdd);
-        south.add(btnEdit);
-        south.add(btnRemove);
+        Arrays.stream(buttons).forEach(south::add);
 
 
         add(BorderLayout.NORTH, top);
         add(BorderLayout.CENTER, middle);
         add(BorderLayout.SOUTH, south);
 
-        btnEdit.addActionListener(this);
-        btnAdd.addActionListener(this);
-        btnRemove.addActionListener(this);
-        MyButton.handCursor.accept(List.of(btnEdit, btnAdd, btnRemove));
+        MyButton.handCursor.accept(buttons);
         comboBoxGenres.addActionListener(this);
+        Arrays.stream(buttons).forEach(button -> button.addActionListener(this));
 
 
         populateList();
@@ -106,7 +101,7 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new MainMenuWithTable();
+        new MainMenu();
 
     }
 
@@ -135,7 +130,7 @@ public class MainMenuWithTable extends JFrame implements ActionListener {
             return;
         }
         MovieInfo.setMovieID(getSelectedMovieID());
-        new EditMovieForm(MainMenuWithTable.this);
+        new EditMovieForm(MainMenu.this);
     }
 
     int getSelectedMovieID() {
