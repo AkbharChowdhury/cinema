@@ -94,3 +94,25 @@ CREATE OR REPLACE VIEW available_movie_genres AS
     NATURAL JOIN genres g
     ORDER BY genre;
 SELECT * FROM available_movie_genres;
+
+
+CREATE PROCEDURE pr_add_movies_and_genres(movie_title varchar, genres integer[])
+AS
+$body$
+DECLARE
+	genre_id_index int;
+	inserted_movie_id INT;
+
+BEGIN
+
+	INSERT INTO movies(title) VALUES(movie_title) RETURNING movie_id INTO inserted_movie_id;
+
+	FOREACH genre_id_index IN ARRAY genres
+		LOOP
+			INSERT INTO movie_genres (movie_id, genre_id) VALUES(inserted_movie_id, genre_id_index);
+		END LOOP;
+
+
+END;
+$body$
+language plpgsql;
