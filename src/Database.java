@@ -9,7 +9,8 @@ import java.util.*;
 import static models.Messages.errorMsg;
 
 public class Database {
-    private Database() {}
+    private Database() {
+    }
 
     private static volatile Database instance;
 
@@ -64,7 +65,6 @@ public class Database {
 
     }
 
-
     public List<Movie> getMovieList() {
         List<Movie> list = new ArrayList<>();
         try (Connection con = connect();
@@ -109,7 +109,6 @@ public class Database {
 
     }
 
-
     public String getMovieName(int movieID) {
 
         try (var con = connect(); var stmt = con.prepareStatement("SELECT title FROM movies WHERE movie_id = ?")) {
@@ -145,17 +144,15 @@ public class Database {
     }
 
 
-    public boolean hasDeletedRecord(String tableName, String idField, int id) {
+    public void deleteRecord(String tableName, String idField, int id) {
         try (var con = connect();
              var stmt = con.prepareStatement(String.format("DELETE FROM %s WHERE %s = ?", tableName, idField))) {
             stmt.setInt(1, id);
-            return stmt.execute();
+            stmt.execute();
         } catch (Exception ex) {
             errorMsg(ex.getMessage());
         }
-        return false;
     }
-
 
     public void addMovieGenres(int movieID, List<Integer> genreIDs) {
         try (var con = connect()) {
@@ -171,20 +168,17 @@ public class Database {
         }
     }
 
-
-    public int updateMovieTitle(String title, int movieID) {
+    public void updateMovieTitle(String title, int movieID) {
         try (var con = connect()) {
             var stmt = con.prepareStatement("UPDATE movies SET title = ? WHERE  movie_id = ?");
             stmt.setString(1, title);
             stmt.setInt(2, movieID);
-            return stmt.executeUpdate();
+            stmt.executeUpdate();
 
         } catch (Exception ex) {
             errorMsg(ex.getMessage());
         }
-        return 0;
     }
-
 
     public boolean addMovieAndGenres(String title, Set<Integer> genres) {
         try (var con = connect()) {

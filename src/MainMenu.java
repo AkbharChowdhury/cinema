@@ -16,21 +16,19 @@ import java.util.Vector;
 
 
 public class MainMenu extends JFrame implements ActionListener {
-    Database db = Database.getInstance();
-    List<Movie> movieList = db.getMovieList();
-    SearchMovies search = new SearchMovies(movieList);
+    private final Database db = Database.getInstance();
+    private List<Movie> movieList = db.getMovieList();
+    private final SearchMovies search = new SearchMovies(movieList);
 
-    JButton btnAdd = new JButton("Add");
-    JButton btnEdit = new JButton("Edit");
-    JButton btnRemove = new JButton("Remove");
-    JButton[] buttons = {btnAdd, btnEdit, btnRemove};
+    private final JButton btnAdd = new JButton("Add");
+    private final JButton btnEdit = new JButton("Edit");
+    private final JButton btnRemove = new JButton("Remove");
+    private JButton[] buttons = {btnAdd, btnEdit, btnRemove};
 
-    JTextField txtTitle = new JTextField(40);
-    JComboBox<String> comboBoxGenres = new JComboBox<>();
-
-    JTable table = new JTable();
-
-    DefaultTableModel tableModel = new DefaultTableModel() {
+    private final JTextField txtTitle = new JTextField(40);
+    private final JComboBox<String> comboBoxGenres = new JComboBox<>();
+    private final JTable table = new JTable();
+    private final DefaultTableModel tableModel = new DefaultTableModel() {
 
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -101,6 +99,7 @@ public class MainMenu extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
+
         new MainMenu();
 
     }
@@ -151,7 +150,7 @@ public class MainMenu extends JFrame implements ActionListener {
         }
 
         if (Messages.hasConfirmed.apply("Are you sure you want to remove this movie?")) {
-            db.hasDeletedRecord("movies", "movie_id", getSelectedMovieID());
+            db.deleteRecord("movies", "movie_id", getSelectedMovieID());
             tableModel.removeRow(table.getSelectedRow());
             search.setList(db.getMovieList());
         }

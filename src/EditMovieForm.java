@@ -10,9 +10,8 @@ import java.util.List;
 
 public class EditMovieForm extends JFrame implements ActionListener {
     private static MainMenu mainMenu;
-    final int MOVIE_ID = MovieInfo.getMovieID();
-
-    Database db = Database.getInstance();
+    private final int MOVIE_ID = MovieInfo.getMovieID();
+    private final Database db = Database.getInstance();
     final String MOVIE_TITLE = db.getMovieName(MOVIE_ID);
     private final List<Genre> genreList = db.getAllGenres();
     private final JTextField txtTitle = new JTextField(40);
@@ -66,8 +65,6 @@ public class EditMovieForm extends JFrame implements ActionListener {
     }
 
 
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnUndoGenre) {
@@ -75,18 +72,8 @@ public class EditMovieForm extends JFrame implements ActionListener {
             showSelectedGenres();
         }
         if (e.getSource() == btnUpdateMovie) {
-            boolean hasSelectedGenre = Genre.hasSelectedGenre.apply(checkboxes);
-            if (txtTitle.getText().trim().isBlank()) {
-                Messages.showErrorMessage("Title required!", "Movie title is required");
-                return;
-            }
-            if (!hasSelectedGenre) {
-                Messages.showErrorMessage("Genre required!", "Please choose a genre");
-                return;
-            }
-
+            if (!isFormValid()) return;
             updateGenres();
-
         }
 
         if (e.getSource() == btnUndoTitle) {
@@ -95,9 +82,23 @@ public class EditMovieForm extends JFrame implements ActionListener {
         }
     }
 
+    private boolean isFormValid() {
+
+        boolean hasSelectedGenre = Genre.hasSelectedGenre.apply(checkboxes);
+        if (txtTitle.getText().trim().isBlank()) {
+            Messages.showErrorMessage("Title required!", "Movie title is required");
+            return false;
+        }
+        if (!hasSelectedGenre) {
+            Messages.showErrorMessage("Genre required!", "Please choose a genre");
+            return false;
+        }
+        return true;
+    }
+
     private void updateGenres() {
         db.updateMovieTitle(txtTitle.getText().trim(), MOVIE_ID);
-        db.hasDeletedRecord("movie_genres", "movie_id", MOVIE_ID);
+        db.deleteRecord("movie_genres", "movie_id", MOVIE_ID);
         List<Integer> selectedGenres = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
 
         db.addMovieGenres(MOVIE_ID, selectedGenres);
