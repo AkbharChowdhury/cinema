@@ -14,15 +14,16 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
     Database db = Database.getInstance();
     final String MOVIE_TITLE = db.getMovieName(MOVIE_ID);
-    List<Genre> genreList = db.getAllGenres();
-    JTextField txtTitle = new JTextField(20);
-    JButton btnUpdateMovie = new JButton("Update Movie");
-    JButton btnUndoTitle = new JButton("Undo title");
+    private final List<Genre> genreList = db.getAllGenres();
+    private final JTextField txtTitle = new JTextField(40);
+    private final JButton btnUpdateMovie = new JButton("Update Movie");
+    private final JButton btnUndoTitle = new JButton("Undo title");
+    private final JButton btnUndoGenre = new JButton("Undo Genre");
 
-    JButton[] buttons = {btnUpdateMovie, btnUndoTitle};
+    private final JButton[] buttons = {btnUpdateMovie, btnUndoTitle, btnUndoGenre};
 
 
-    List<Checkbox> checkboxes;
+    private final List<Checkbox> checkboxes;
 
 
     public EditMovieForm(MainMenu mainMenuForm) {
@@ -37,40 +38,42 @@ public class EditMovieForm extends JFrame implements ActionListener {
         top.add(new JLabel("Movie"));
         top.add(txtTitle);
         top.add(btnUndoTitle);
+        top.add(btnUndoGenre);
 
         middle.setLayout(new GridLayout(genreList.size(), 2));
-        addGenres(middle);
+
+        checkboxes = genreList.stream().map(genre -> new Checkbox(genre.type())).toList();
+        checkboxes.forEach(middle::add);
 
         panel.add(top, BorderLayout.NORTH);
         panel.add(middle, BorderLayout.CENTER);
         panel.add(btnUpdateMovie, BorderLayout.SOUTH);
         setContentPane(panel);
         setDefaultCloseOperation(MyWindow.getCloseOperation());
-        setSize(450, 400);
+        setSize(750, 400);
+
         Arrays.stream(buttons).forEach(button -> button.addActionListener(this));
-
-
         MyButton.handCursor.accept(buttons);
-
+        showSelectedGenres();
 
         setVisible(true);
-        ShowSelectedGenres();
     }
 
-    private void ShowSelectedGenres() {
+    private void showSelectedGenres() {
         checkboxes.stream()
                 .filter(checkbox -> db.getSelectedMovieGenres(MOVIE_ID).stream().anyMatch(label -> label.equals(checkbox.getLabel())))
                 .forEach(checkbox -> checkbox.setState(true));
     }
 
-    private void addGenres(JPanel middle) {
-        checkboxes = genreList.stream().map(genre -> new Checkbox(genre.type())).toList();
-        checkboxes.forEach(middle::add);
-    }
+
 
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnUndoGenre) {
+            checkboxes.forEach(checkbox -> checkbox.setState(false));
+            showSelectedGenres();
+        }
         if (e.getSource() == btnUpdateMovie) {
             boolean hasSelectedGenre = Genre.hasSelectedGenre.apply(checkboxes);
             if (txtTitle.getText().trim().isBlank()) {
@@ -94,7 +97,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
     private void updateGenres() {
         db.updateMovieTitle(txtTitle.getText().trim(), MOVIE_ID);
-        db.delete("movie_genres", "movie_id", MOVIE_ID);
+        db.hasDeletedRecord("movie_genres", "movie_id", MOVIE_ID);
         List<Integer> selectedGenres = Genre.getSelectedGenres(checkboxes, genreList).stream().map(Genre::id).toList();
 
         db.addMovieGenres(MOVIE_ID, selectedGenres);
