@@ -1,4 +1,5 @@
 import models.Genre;
+import models.Messages;
 import models.Movie;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -7,7 +8,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 
-import static models.Messages.errorMsg;
+import static models.Messages.printErrorMessage;
 
 public class Database {
     private Database() {
@@ -24,7 +25,7 @@ public class Database {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + dbName, props.get("USERNAME").toString(), props.get("PASSWORD").toString());
         } catch (Exception ex) {
-            errorMsg(ex.getMessage());
+            printErrorMessage.accept(ex.getMessage());
         }
         return connection;
 
@@ -41,7 +42,7 @@ public class Database {
             }
         } catch (Exception ex) {
 
-            errorMsg(ex.getMessage());
+            Messages.printErrorMessage.accept(ex.getMessage());
 
         }
 
@@ -58,8 +59,9 @@ public class Database {
             while (rs.next())
                 list.add(rs.getString("genre"));
 
-        } catch (SQLException e) {
-            errorMsg(String.format("There was an error with fetching genres %s", e.getMessage()));
+        } catch (SQLException ex) {
+            printErrorMessage.accept(ex.getMessage());
+
         }
 
         return list.stream().sorted(String.CASE_INSENSITIVE_ORDER).toList().stream().map(WordUtils::capitalizeFully).toList();
@@ -81,8 +83,8 @@ public class Database {
 
             }
 
-        } catch (Exception e) {
-            errorMsg(e.getMessage());
+        } catch (Exception ex) {
+            printErrorMessage.accept(ex.getMessage());
 
         }
         return list;
@@ -101,8 +103,8 @@ public class Database {
                 list.add(new Genre(rs.getInt("genre_id"), rs.getString("genre")));
             }
 
-        } catch (Exception e) {
-            errorMsg(e.getMessage());
+        } catch (Exception ex) {
+            printErrorMessage.accept(ex.getMessage());
 
         }
         return list;
@@ -119,8 +121,8 @@ public class Database {
             }
 
 
-        } catch (Exception e) {
-            errorMsg(e.getMessage());
+        } catch (Exception ex) {
+            printErrorMessage.accept(ex.getMessage());
         }
 
         return MessageFormat.format( "Error fetching movie name by movie id, Movie ID {0} does not exist", movieID);
@@ -137,8 +139,8 @@ public class Database {
             while (rs.next()) {
                 list.add(rs.getString("genre"));
             }
-        } catch (Exception e) {
-            errorMsg(e.getMessage());
+        } catch (Exception ex) {
+            printErrorMessage.accept(ex.getMessage());
         }
         return list.stream().toList();
 
@@ -151,7 +153,7 @@ public class Database {
             stmt.setInt(1, id);
             stmt.execute();
         } catch (Exception ex) {
-            errorMsg(ex.getMessage());
+            printErrorMessage.accept(ex.getMessage());
         }
     }
 
@@ -165,7 +167,7 @@ public class Database {
             }
 
         } catch (Exception ex) {
-            errorMsg(ex.getMessage());
+            printErrorMessage.accept(ex.getMessage());
         }
     }
 
@@ -177,7 +179,7 @@ public class Database {
             stmt.executeUpdate();
 
         } catch (Exception ex) {
-            errorMsg(ex.getMessage());
+            printErrorMessage.accept(ex.getMessage());
         }
     }
 
@@ -190,7 +192,7 @@ public class Database {
             return stmt.executeUpdate() == -1;
 
         } catch (Exception ex) {
-            errorMsg(ex.getMessage());
+            printErrorMessage.accept(ex.getMessage());
         }
         return false;
     }
