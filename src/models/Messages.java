@@ -14,12 +14,7 @@ public class Messages {
     public static void errorMsg(String msg){
         System.err.println(msg);
     }
-
-
-
-
     public static Function<String, Boolean> hasConfirmed = (msg) -> JOptionPane.showConfirmDialog(null, msg) == JOptionPane.YES_OPTION;
-
     public static void message(String message) {
         JOptionPane.showMessageDialog(null, message);
     }

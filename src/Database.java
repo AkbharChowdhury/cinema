@@ -171,7 +171,7 @@ public class Database {
 
     public void updateMovieTitle(String title, int movieID) {
         try (var con = connect()) {
-            var stmt = con.prepareStatement("UPDATE movies SET title = ? WHERE  movie_id = ?");
+            var stmt = con.prepareStatement("UPDATE movies SET title = ? WHERE movie_id = ?");
             stmt.setString(1, title);
             stmt.setInt(2, movieID);
             stmt.executeUpdate();

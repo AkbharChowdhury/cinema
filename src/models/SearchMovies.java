@@ -4,7 +4,10 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public final class SearchMovies {
 
@@ -14,10 +17,6 @@ public final class SearchMovies {
 
     public void setList(List<Movie> list) {
         this.list = list;
-    }
-
-    public List<Movie> getList() {
-        return list;
     }
 
     public void setTitle(String title) {
@@ -42,12 +41,12 @@ public final class SearchMovies {
     }
 
 
-    public List<Movie> filterResults() {
-        return list.stream()
-                .filter(filterTitle)
-                .filter(filterGenre())
-                .toList();
-    }
+    public Supplier<List<Movie>> filterResults = () ->
+            list.stream()
+                    .filter(filterTitle)
+                    .filter(filterGenre())
+                    .toList();
+
 
     @Override
     public String toString() {

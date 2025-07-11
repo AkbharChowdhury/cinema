@@ -134,7 +134,7 @@ public class MainMenu extends JFrame implements ActionListener {
 
     int getSelectedMovieID() {
         int selectedIndex = table.getSelectedRow();
-        movieList = search.filterResults();
+        movieList = search.filterResults.get();
         return movieList.get(selectedIndex).id();
     }
 
@@ -159,7 +159,7 @@ public class MainMenu extends JFrame implements ActionListener {
 
     void populateList() {
         ((DefaultTableModel) table.getModel()).setRowCount(0);
-        List<Movie> movies = search.filterResults();
+        List<Movie> movies = search.filterResults.get();
         int movieSize = movies.size();
         for (int i = 0; i < movieSize; i++) {
             Movie movie = movies.get(i);
