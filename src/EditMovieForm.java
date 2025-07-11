@@ -26,6 +26,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
 
     public EditMovieForm(MainMenu mainMenuForm) {
+        System.out.println(MOVIE_ID);
         mainMenu = mainMenuForm;
         txtTitle.setText(MOVIE_TITLE);
         setTitle("Edit Movie");
@@ -41,7 +42,7 @@ public class EditMovieForm extends JFrame implements ActionListener {
 
         middle.setLayout(new GridLayout(genreList.size(), 2));
 
-        checkboxes = genreList.stream().map(genre -> new Checkbox(genre.type())).toList();
+        checkboxes = genreList.stream().map(genre -> new Checkbox(genre.name())).toList();
         checkboxes.forEach(middle::add);
 
         panel.add(top, BorderLayout.NORTH);

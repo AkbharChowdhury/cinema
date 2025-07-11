@@ -3,6 +3,7 @@ import models.Movie;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.sql.*;
+import java.text.MessageFormat;
 import java.util.*;
 
 
@@ -93,12 +94,11 @@ public class Database {
         List<Genre> list = new ArrayList<>();
         try (Connection con = connect();
              Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM genres ORDER BY genre")
+             ResultSet rs = stmt.executeQuery("SELECT genre, genre_id FROM view_all_genres")
         ) {
 
             while (rs.next()) {
                 list.add(new Genre(rs.getInt("genre_id"), rs.getString("genre")));
-
             }
 
         } catch (Exception e) {
@@ -113,7 +113,7 @@ public class Database {
 
         try (var con = connect(); var stmt = con.prepareStatement("SELECT title FROM movies WHERE movie_id = ?")) {
             stmt.setInt(1, movieID);
-            try (var rs = stmt.executeQuery()) {
+            try (ResultSet rs = stmt.executeQuery()) {
                 rs.next();
                 return rs.getString("title");
             }
@@ -122,7 +122,8 @@ public class Database {
         } catch (Exception e) {
             errorMsg(e.getMessage());
         }
-        return "error fetching movie name by movie id";
+
+        return MessageFormat.format( "Error fetching movie name by movie id, Movie ID {0} does not exist", movieID);
 
     }
 
@@ -145,8 +146,8 @@ public class Database {
 
 
     public void deleteRecord(String tableName, String idField, int id) {
-        try (var con = connect();
-             var stmt = con.prepareStatement(String.format("DELETE FROM %s WHERE %s = ?", tableName, idField))) {
+        try (Connection con = connect();
+             PreparedStatement stmt = con.prepareStatement(String.format("DELETE FROM %s WHERE %s = ?", tableName, idField))) {
             stmt.setInt(1, id);
             stmt.execute();
         } catch (Exception ex) {
@@ -183,9 +184,9 @@ public class Database {
     public boolean addMovieAndGenres(String title, Set<Integer> genres) {
         try (var con = connect()) {
             var stmt = con.prepareStatement("CALL pr_add_movie_and_genres(?, ?)");
-            Array array = con.createArrayOf("INTEGER", new Object[]{genres.toArray(new Integer[0])});
+            Array genreArray = con.createArrayOf("INTEGER", new Object[]{genres.toArray(new Integer[0])});
             stmt.setString(1, title);
-            stmt.setArray(2, array);
+            stmt.setArray(2, genreArray);
             return stmt.executeUpdate() == -1;
 
         } catch (Exception ex) {

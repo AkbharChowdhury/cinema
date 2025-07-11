@@ -33,7 +33,7 @@ public class AddMovieForm extends JFrame implements ActionListener {
         top.add(txtTitle);
         middle.setLayout(new GridLayout(genres.size(), 2));
 
-        checkboxes = genres.stream().map(genre -> new Checkbox(genre.type())).toList();
+        checkboxes = genres.stream().map(genre -> new Checkbox(genre.name())).toList();
         checkboxes.forEach(middle::add);
 
         panel.add(top, BorderLayout.NORTH);
